@@ -69,6 +69,7 @@ impl Filter {
     /// # Returns
     ///
     /// * `Result<()>` - Success or error result
+    // req-traceability: comp_req__fg__condition_eval
     pub async fn meet_scenario_condition(&mut self, data: &DdsData) -> Result<()> {
         use std::time::Instant;
         let start = Instant::now();

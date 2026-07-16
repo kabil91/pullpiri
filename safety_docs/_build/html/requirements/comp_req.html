@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pullpiri Component Requirements &#8212; Pullpiri Functional Safety Documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pullpiri Component FMEA" href="../safety_analysis/fmea.html" />
+    <link rel="prev" title="Pullpiri Assumptions of Use" href="../aou/aou_req.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="pullpiri-component-requirements">
+<h1>Pullpiri Component Requirements<a class="headerlink" href="#pullpiri-component-requirements" title="Link to this heading">¶</a></h1>
+<p>Pullpiri targets <strong>ASIL-B (software)</strong>. Every requirement below is traced
+to a <code class="docutils literal notranslate"><span class="pre">//</span> <span class="pre">req-traceability:</span></code> comment placed directly above the implementing
+Rust function. The S-CORE source linker verifies these links at build time.</p>
+<section id="apiserver-component">
+<h2>APIServer Component<a class="headerlink" href="#apiserver-component" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-efbc4f45">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__api__yaml_validation">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – YAML Artifact Validation Before DB Write</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__api__yaml_validation" title="comp_req__api__yaml_validation">comp_req__api__yaml_validation</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__etcd_replication</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Without schema validation, a malformed or truncated YAML payload
+can be written to etcd, corrupting scenario state for all downstream
+components. This is classified as an Input Validation safety mechanism
+per ISO 26262 Part 6 §7.4.4.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The APIServer <code class="docutils literal notranslate"><span class="pre">apply()</span></code> function shall split, parse, and verify that the
+incoming YAML payload contains at least one valid <code class="docutils literal notranslate"><span class="pre">Scenario</span></code> document and
+one valid <code class="docutils literal notranslate"><span class="pre">Package</span></code> document before initiating any etcd write operation.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/artifact/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">apply()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-68518b20">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__api__connectivity_probe">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – TCP Connectivity Probe with Bounded Timeout</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__api__connectivity_probe" title="comp_req__api__connectivity_probe">comp_req__api__connectivity_probe</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Unbounded blocking on network I/O in a safety-relevant orchestrator
+can cause the entire service to deadlock. The 3-second timeout bounds
+the diagnostic probe and prevents thread starvation (ISO 26262
+Part 5 §8.4 – Diagnostic Coverage).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The APIServer <code class="docutils literal notranslate"><span class="pre">check_service_connectivity()</span></code> function shall use a
+<code class="docutils literal notranslate"><span class="pre">tokio::time::timeout</span></code> of exactly 3 seconds when probing downstream
+service endpoints via TCP connect.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/diagnostics.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">check_service_connectivity()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-6792fda5">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__api__node_probe">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – NodeAgent Reachability Probe</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__api__node_probe" title="comp_req__api__node_probe">comp_req__api__node_probe</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Before routing workload commands to a NodeAgent, the APIServer
+must verify the agent is reachable. Sending a workload start
+command to an unreachable node results in a silent failure with
+no recovery path.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The APIServer <code class="docutils literal notranslate"><span class="pre">check_node_agent_connectivity()</span></code> function shall probe the
+NodeAgent TCP port (47004) before dispatching any workload operation.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/diagnostics.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">check_node_agent_connectivity()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="statemanager-component">
+<h2>StateManager Component<a class="headerlink" href="#statemanager-component" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-abd0d62d">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__sm__validate_state">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">StateManager – State Transition Plausibility Check</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__sm__validate_state" title="comp_req__sm__validate_state">comp_req__sm__validate_state</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__posix_os</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">State transitions with empty resource names, empty transition IDs,
+or identical current/target states indicate malformed or duplicate
+requests. Accepting such inputs would corrupt the state machine
+and cause erroneous scenario lifecycle decisions (ISO 26262
+Part 6 §7.4.6 – Plausibility Check).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The StateManager <code class="docutils literal notranslate"><span class="pre">validate_state_change()</span></code> function shall reject any
+StateChange request where the resource name, transition ID, or source field
+is empty, or where the current state equals the target state.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/state_machine.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">validate_state_change()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-67025cd8">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__sm__heartbeat">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">StateManager – 30-Second Heartbeat Alive Signal</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__sm__heartbeat" title="comp_req__sm__heartbeat">comp_req__sm__heartbeat</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Without a periodic alive signal, a deadlocked or frozen StateManager
+event loop is undetectable from outside. An external watchdog that only
+monitors process existence (PID alive) will not detect a live-locked
+thread that has stopped processing messages. ISO 26262 Part 6 §7.4.9
+requires a watchdog trigger to verify that safety-relevant processing
+has not silently frozen.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The StateManager <code class="docutils literal notranslate"><span class="pre">run()</span></code> function shall emit a log message tagged
+<code class="docutils literal notranslate"><span class="pre">[HEARTBEAT]</span></code> every 30 seconds while the event loop is operational.
+The external watchdog shall flag a safety event if no heartbeat is observed
+within a 60-second window (2× the emission interval).</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – heartbeat task in <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">id<span class="colon">:</span></dt>
+<dd class="field-odd"><p>comp_req__sm__cluster_reconcile</p>
+</dd>
+<dt class="field-even">reqtype<span class="colon">:</span></dt>
+<dd class="field-even"><p>Functional</p>
+</dd>
+<dt class="field-odd">status<span class="colon">:</span></dt>
+<dd class="field-odd"><p>valid</p>
+</dd>
+<dt class="field-even">safety<span class="colon">:</span></dt>
+<dd class="field-even"><p>ASIL_B</p>
+</dd>
+<dt class="field-odd">security<span class="colon">:</span></dt>
+<dd class="field-odd"><p>NO</p>
+</dd>
+<dt class="field-even">satisfies<span class="colon">:</span></dt>
+<dd class="field-even"><p>aou_req__pullpiri__etcd_replication</p>
+</dd>
+<dt class="field-odd">rationale<span class="colon">:</span></dt>
+<dd class="field-odd"><p>When a package enters an error/dead state, the StateManager must
+actively trigger ActionController to attempt recovery rather than
+leaving the cluster in a silent error state (ISO 26262
+Part 6 §7.4.12 – Fault Reaction).</p>
+</dd>
+</dl>
+<p>The StateManager shall invoke <code class="docutils literal notranslate"><span class="pre">trigger_action_controller_reconcile_internal()</span></code>
+via gRPC when any Package enters a degraded or error state, requesting that
+ActionController attempt recovery to the desired running state.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">trigger_action_controller_reconcile_internal()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-4ec78f3a">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__sm__graceful_shutdown">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">StateManager – Graceful Shutdown on Channel Close</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__sm__graceful_shutdown" title="comp_req__sm__graceful_shutdown">comp_req__sm__graceful_shutdown</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__posix_os</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">When an upstream component closes its channel (e.g. apiserver
+shuts down), the StateManager must detect this and exit its
+processing loop cleanly without leaving dangling threads or
+unclosed file descriptors (ISO 26262 Part 6 §7.4.11 –
+Controlled Degradation).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The StateManager container and state-change processing loops shall detect
+channel closure (<code class="docutils literal notranslate"><span class="pre">None</span></code> from <code class="docutils literal notranslate"><span class="pre">recv()</span></code>) and perform an orderly exit,
+logging a controlled degradation event rather than panicking.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – channel-close handling in <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="actioncontroller-component">
+<h2>ActionController Component<a class="headerlink" href="#actioncontroller-component" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-25be6de4">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__ac__reconcile_do">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">ActionController – Self-Healing Reconcile Loop</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__ac__reconcile_do" title="comp_req__ac__reconcile_do">comp_req__ac__reconcile_do</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__posix_os</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">When the StateManager detects a Package failure and triggers
+reconciliation, the ActionController must compare actual versus
+desired container state and take corrective action. Failure to
+act would leave the system in a permanent degraded state
+(ISO 26262 Part 6 §7.4.12 – Fault Recovery).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The ActionController <code class="docutils literal notranslate"><span class="pre">reconcile_do()</span></code> function shall compare the current
+and desired status of a scenario’s workloads. If the desired state is
+<code class="docutils literal notranslate"><span class="pre">Running</span></code> and the current state differs, it shall invoke <code class="docutils literal notranslate"><span class="pre">start_workload()</span></code>
+for each model in the scenario’s package.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/actioncontroller/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconcile_do()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-31f5bf5a">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__ac__retry_limit">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">ActionController – Retry Limit on Failing Workloads</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__ac__retry_limit" title="comp_req__ac__retry_limit">comp_req__ac__retry_limit</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Without a hard retry cap, a continuously crashing workload would
+cause the ActionController to enter an infinite restart loop,
+saturating host CPU and starving other safety-critical processes
+(ISO 26262 Part 6 §7.4.12 – Fault Reaction).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The ActionController shall limit the number of consecutive reconcile attempts
+per scenario to <code class="docutils literal notranslate"><span class="pre">MAX_RECONCILE_RETRIES</span></code> (default: 3). Once the limit is
+reached, the scenario shall be escalated to a permanent error state and a
+<code class="docutils literal notranslate"><span class="pre">[SAFETY]</span></code> log event emitted. No further restart attempts shall occur
+without manual operator intervention.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/actioncontroller/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">MAX_RECONCILE_RETRIES</span></code> constant and retry_counts check</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="filtergateway-component">
+<h2>FilterGateway Component<a class="headerlink" href="#filtergateway-component" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-34c38e14">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__fg__condition_eval">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">FilterGateway – DDS Signal Condition Evaluation</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__fg__condition_eval" title="comp_req__fg__condition_eval">comp_req__fg__condition_eval</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__dds_network</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The FilterGateway is the component that converts raw vehicle DDS
+signals into scenario trigger decisions. Incorrect condition
+evaluation would cause scenarios to activate on wrong signals
+(false positive) or fail to activate on correct signals
+(false negative) — both represent safety-relevant failures.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The FilterGateway <code class="docutils literal notranslate"><span class="pre">meet_scenario_condition()</span></code> function shall evaluate the
+DDS data field value against the configured scenario condition expression
+(<code class="docutils literal notranslate"><span class="pre">eq</span></code>, <code class="docutils literal notranslate"><span class="pre">lt</span></code>, <code class="docutils literal notranslate"><span class="pre">le</span></code>, <code class="docutils literal notranslate"><span class="pre">ge</span></code>, <code class="docutils literal notranslate"><span class="pre">gt</span></code>) and shall only trigger the
+ActionController when the condition is precisely satisfied.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/filter/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">meet_scenario_condition()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-989745bb">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__fg__dds_silence_detect">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">FilterGateway – DDS Silence Detection with 5-Second Timeout</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__fg__dds_silence_detect" title="comp_req__fg__dds_silence_detect">comp_req__fg__dds_silence_detect</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__dds_network</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">If the DDS vehicle data feed becomes silent (due to publisher
+crash, network partition, or middleware failure), all scenario
+conditions will never evaluate and active features will stall
+indefinitely. A bounded silence detector is required to escalate
+this failure within the ASIL-B latency requirement
+(ISO 26262 Part 6 §7.4.9 – Watchdog Pattern).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The FilterGateway <code class="docutils literal notranslate"><span class="pre">process_dds_data()</span></code> function shall monitor the DDS
+message stream and detect silence (no messages received) within a configurable
+timeout window (default: <code class="docutils literal notranslate"><span class="pre">DDS_SILENCE_TIMEOUT_SECS</span> <span class="pre">=</span> <span class="pre">5</span></code>). Upon timeout, a
+<code class="docutils literal notranslate"><span class="pre">[SAFETY]</span></code> log event shall be emitted. The external watchdog can then
+escalate within ASIL-B latency bounds.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">process_dds_data()</span></code> timeout branch</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="nodeagent-component">
+<h2>NodeAgent Component<a class="headerlink" href="#nodeagent-component" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-6bbdc2a4">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__na__local_reconcile">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">NodeAgent – Local Container Reconciliation Loop</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__na__local_reconcile" title="comp_req__na__local_reconcile">comp_req__na__local_reconcile</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">A workload container that exits unexpectedly (crash, OOM kill)
+must be detected and restarted locally without requiring a full
+round-trip through the StateManager and ActionController
+(ISO 26262 Part 6 §7.4.9 – Watchdog Pattern).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The NodeAgent <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code> shall run continuously, comparing
+desired container states against actual Podman container states every 1
+second, and invoking restart or re-creation procedures on any discrepancy.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-f225ec96">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__na__backoff">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">NodeAgent – Exponential Backoff on Container Restart</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__na__backoff" title="comp_req__na__backoff">comp_req__na__backoff</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Restarting a repeatedly crashing container at maximum rate (tight
+loop) can exhaust CPU and I/O resources, starving other services
+and introducing a Dependent Failure Initiator (DFI). Exponential
+backoff limits the blast radius of a persistent container failure
+(ISO 26262 Part 6 §7.4.9).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The NodeAgent <code class="docutils literal notranslate"><span class="pre">calculate_backoff()</span></code> function shall compute restart delay
+as <code class="docutils literal notranslate"><span class="pre">min(10</span> <span class="pre">×</span> <span class="pre">2^restart_count,</span> <span class="pre">300)</span></code> seconds, capping the maximum wait at
+300 seconds regardless of the number of prior restarts.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">calculate_backoff()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-8bdfbf6d">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__api__schema_validation">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – YAML Schema Validation for Settings Service</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__api__schema_validation" title="comp_req__api__schema_validation">comp_req__api__schema_validation</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__mtls_grpc</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The Settings Service in the APIServer processes configuration
+updates that affect Pullpiri module behaviour. Without schema
+validation, a malformed or malicious settings payload could
+corrupt module configuration, violating SG_003 (Input Validation)
+and SG_005 (Fault Reaction Bound).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">YES</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The APIServer Settings Service <code class="docutils literal notranslate"><span class="pre">validate()</span></code> function shall verify that
+all received configuration payloads conform to the expected settings
+schema before applying them. Invalid payloads shall be rejected with
+an appropriate error response and logged.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/</span></code> – Settings Service <code class="docutils literal notranslate"><span class="pre">validate()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-15bdeaad">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_req docutils align-default" id="comp_req__api__yaml_signing">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Component Requirement</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – YAML Artifact Signature Verification</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_req__api__yaml_signing" title="comp_req__api__yaml_signing">comp_req__api__yaml_signing</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Functional</span></span></div>
+<div class="line"><span class="needs_satisfies"><span class="needs_label">satisfies: </span><span class="needs_data">aou_req__pullpiri__mtls_grpc</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The APIServer ``apply()`` function accepts YAML payloads
+containing Scenario and Package specifications that directly
+control workload container lifecycle. Without signature
+verification, a tampered or forged YAML payload could
+activate unauthorised scenarios, violating SG_003 and SG_006.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">YES</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The APIServer <code class="docutils literal notranslate"><span class="pre">apply()</span></code> function shall verify a digital signature or
+HMAC over each received YAML payload before parsing or storing it.
+Payloads with missing, invalid, or expired signatures shall be rejected
+with a 403 Forbidden response and logged as a security event.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/artifact/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">apply()</span></code>
+<strong>Note</strong>: Implementation of cryptographic signing mechanism is P2 (pending).</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Pullpiri Functional Safety</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../safety_manual.html">Pullpiri Safety Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aou/aou_req.html">Pullpiri Assumptions of Use</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pullpiri Component Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#apiserver-component">APIServer Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statemanager-component">StateManager Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#actioncontroller-component">ActionController Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filtergateway-component">FilterGateway Component</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nodeagent-component">NodeAgent Component</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../safety_analysis/fmea.html">Pullpiri Component FMEA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../safety_analysis/dfa.html">Pullpiri Dependent Failure Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ci_regression_scope.html">Pullpiri CI Regression Scope</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../aou/aou_req.html" title="previous chapter">Pullpiri Assumptions of Use</a></li>
+      <li>Next: <a href="../safety_analysis/fmea.html" title="next chapter">Pullpiri Component FMEA</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/requirements/comp_req.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

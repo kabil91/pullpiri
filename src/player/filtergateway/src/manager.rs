@@ -117,11 +117,24 @@ impl FilterGatewayManager {
     /// Function to receive subscribed DDS data and pass it to filters
     ///
     /// This function runs as a separate task to continuously receive and process DDS data.
+    /// Safety: Uses a 5-second timeout to detect DDS feed silence (dead publisher or
+    /// network partition). A timeout is logged as a safety event. When the AoU
+    /// (aou_req__pullpiri__dds_network) Liveliness QoS is active, a silence event
+    /// will also produce a DDS liveliness-lost notification through the same channel.
+    ///
+    /// ISO 26262 Part 6 §7.4.9 — Watchdog / Timeout pattern.
     ///
     /// # Returns
     ///
     /// * `Result<()>` - Success or error result
+    // req-traceability: comp_req__fg__dds_silence_detect
     async fn process_dds_data(&self) -> Result<()> {
+        use tokio::time::{timeout, Duration};
+
+        // Safety: DDS silence threshold — if no message is received within this
+        // window, the feed is considered silent and a safety event is logged.
+        const DDS_SILENCE_TIMEOUT_SECS: u64 = 5;
+
         // Create clone of shared receiver
         let rx_dds = Arc::clone(&self.rx_dds);
 
@@ -129,9 +142,15 @@ impl FilterGatewayManager {
         loop {
             let mut receiver = rx_dds.lock().await;
 
-            // Receive DDS data
-            match receiver.recv().await {
-                Some(dds_data) => {
+            // Safety: Wrap recv() in a timeout to detect DDS feed silence.
+            match timeout(
+                Duration::from_secs(DDS_SILENCE_TIMEOUT_SECS),
+                receiver.recv(),
+            )
+            .await
+            {
+                // ── Message received within timeout ──
+                Ok(Some(dds_data)) => {
                     // Only print if topic or value is not empty
                     if !dds_data.name.is_empty() && !dds_data.value.is_empty() {
                         logd!(
@@ -158,16 +177,31 @@ impl FilterGatewayManager {
                         }
                     }
                 }
-                None => {
-                    // Channel closed
+                // ── Channel closed (DDS publisher shut down cleanly) ──
+                Ok(None) => {
                     logd!(5, "DDS data channel closed, stopping processor");
                     break;
+                }
+                // ── Timeout: no DDS message received within threshold ──
+                Err(_) => {
+                    logd!(
+                        5,
+                        "[SAFETY] DDS feed silence detected: no message received in {}s. \
+                         Vehicle signal publisher may be down or network partitioned. \
+                         Active scenarios will stall in WAITING state until feed resumes. \
+                         (ISO 26262 Part 6 §7.4.9 — Watchdog Timeout)",
+                        DDS_SILENCE_TIMEOUT_SECS
+                    );
+                    // Continue the loop — do not exit. The feed may recover.
+                    // The watchdog (aou_req__pullpiri__watchdog) handles
+                    // process-level escalation if the whole service is unresponsive.
                 }
             }
         }
 
         Ok(())
     }
+
 
     /// Function to process gRPC requests
     ///

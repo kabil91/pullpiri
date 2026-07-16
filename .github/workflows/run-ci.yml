@@ -99,6 +99,8 @@ jobs:
           mkdir -p dist/coverage/player
           mkdir -p dist/coverage/tools
           mkdir -p dist/coverage/agent
+          mkdir -p dist/coverage/statemanager
+          mkdir -p dist/coverage/actioncontroller
           mkdir -p dist/binaries
 
       # Step 7: Run project build and parse logs
@@ -161,6 +163,23 @@ jobs:
           docker stop rocksdb-test-service || true
           docker rm rocksdb-test-service || true
           echo "✅ RocksDB service cleaned up"
+
+      # Step 14.6: Build safety documentation — traceability gate (ISO 26262 §7.2.11)
+      # Validates all 23 req-traceability tags resolve to known comp_req__* requirement IDs.
+      # A broken or missing tag fails the build, blocking any merge that breaks traceability.
+      - name: Build safety documentation (traceability gate)
+        run: |
+          pip install --quiet sphinx sphinx-needs sphinx-rtd-theme 2>&1 | tail -3
+          sphinx-build -W -b html safety_docs/docs/ safety_docs/_build/html/
+          echo "✅ Sphinx traceability gate passed — all req-traceability tags resolved"
+
+      # Step 14.7: Upload safety documentation HTML as evidence artifact
+      - name: Upload safety documentation (evidence)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: safety-docs-html
+          path: safety_docs/_build/html/
 
       # === Upload All Reports ===
 
@@ -267,28 +286,72 @@ jobs:
           name: code-coverage-html-common
           path: dist/coverage/common/tarpaulin-report-common.html
 
-      #Test Cases are not proper and passing so code coverage report will not generate as of now
-      # - name: Upload coverage report for agent (lcov)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: code-coverage-lcov-agent
-      #     path: dist/coverage/agent/lcov.info
+      # Agent (NodeAgent) coverage — re-enabled after test fixes (ISO 26262 §9.4.5)
+      - name: Upload coverage report for agent (lcov)
+        if: always() && hashFiles('dist/coverage/agent/lcov.info') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-lcov-agent
+          path: dist/coverage/agent/lcov.info
 
-      # - name: Upload coverage report for agent (xml)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: code-coverage-xml-agent
-      #     path: dist/coverage/agent/cobertura.xml
-    
-      # - name: Upload coverage report for agent (html)
-      #   if: always()
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: code-coverage-html-agent
-      #     path: dist/coverage/agent/tarpaulin-report-agent.html
-      
+      - name: Upload coverage report for agent (xml)
+        if: always() && hashFiles('dist/coverage/agent/cobertura.xml') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-xml-agent
+          path: dist/coverage/agent/cobertura.xml
+
+      - name: Upload coverage report for agent (html)
+        if: always() && hashFiles('dist/coverage/agent/tarpaulin-report-agent.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-html-agent
+          path: dist/coverage/agent/tarpaulin-report-agent.html
+
+      # StateManager coverage — new addition (ISO 26262 §9.4.5)
+      - name: Upload coverage report for statemanager (lcov)
+        if: always() && hashFiles('dist/coverage/statemanager/lcov.info') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-lcov-statemanager
+          path: dist/coverage/statemanager/lcov.info
+
+      - name: Upload coverage report for statemanager (xml)
+        if: always() && hashFiles('dist/coverage/statemanager/cobertura.xml') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-xml-statemanager
+          path: dist/coverage/statemanager/cobertura.xml
+
+      - name: Upload coverage report for statemanager (html)
+        if: always() && hashFiles('dist/coverage/statemanager/tarpaulin-report-statemanager.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-html-statemanager
+          path: dist/coverage/statemanager/tarpaulin-report-statemanager.html
+
+      # ActionController coverage — new addition (ISO 26262 §9.4.5)
+      - name: Upload coverage report for actioncontroller (lcov)
+        if: always() && hashFiles('dist/coverage/actioncontroller/lcov.info') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-lcov-actioncontroller
+          path: dist/coverage/actioncontroller/lcov.info
+
+      - name: Upload coverage report for actioncontroller (xml)
+        if: always() && hashFiles('dist/coverage/actioncontroller/cobertura.xml') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-xml-actioncontroller
+          path: dist/coverage/actioncontroller/cobertura.xml
+
+      - name: Upload coverage report for actioncontroller (html)
+        if: always() && hashFiles('dist/coverage/actioncontroller/tarpaulin-report-actioncontroller.html') != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-html-actioncontroller
+          path: dist/coverage/actioncontroller/tarpaulin-report-actioncontroller.html
+
       - name: Upload coverage report for player (lcov)
         if: always() && hashFiles('dist/coverage/player/lcov.info') != ''
         uses: actions/upload-artifact@v4
@@ -358,3 +421,72 @@ jobs:
         with:
           name: nodeagent-binary-arm64
           path: dist/binaries/arm/nodeagent-linux-arm64
+
+  # ===========================================================================
+  # ThreadSanitizer (TSan) Job — ISO 26262 §9.4.9 Dynamic Analysis Evidence
+  # Runs on nightly Rust toolchain to detect data races in async concurrent
+  # code across StateManager, ActionController, and NodeAgent.
+  # Run: cargo +nightly test with -Z sanitizer=thread
+  # Output: dist/reports/tsan_report.txt — uploaded as CI evidence artifact.
+  # ===========================================================================
+  tsan_sanitizer:
+    runs-on: ubuntu-latest
+    name: ThreadSanitizer (TSan) — Concurrency Safety Check
+    continue-on-error: true  # non-blocking until TSan is stable on all crates
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install essential dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y protobuf-compiler libdbus-1-dev pkg-config build-essential
+
+      - name: Install Rust nightly toolchain with TSan components
+        run: |
+          rustup toolchain install nightly --component rust-src
+          rustup override set nightly
+
+      - name: Create TSan report directory
+        run: mkdir -p dist/reports
+
+      # Run TSan on the workspace (excludes nodeagent which has a separate manifest)
+      - name: Run ThreadSanitizer on workspace crates
+        run: |
+          echo "🔍 Running ThreadSanitizer (TSan) — ISO 26262 §9.4.9" | tee dist/reports/tsan_report.txt
+          echo "Target: StateManager, ActionController, FilterGateway, APIServer" | tee -a dist/reports/tsan_report.txt
+          echo "Toolchain: $(rustc --version)" | tee -a dist/reports/tsan_report.txt
+          echo "Date: $(date -u)" | tee -a dist/reports/tsan_report.txt
+          echo "====================================================" | tee -a dist/reports/tsan_report.txt
+          RUSTFLAGS="-Z sanitizer=thread" \
+          cargo +nightly test --workspace \
+            -Z build-std \
+            --target x86_64-unknown-linux-gnu \
+            2>&1 | tee -a dist/reports/tsan_report.txt || true
+          echo "====================================================" | tee -a dist/reports/tsan_report.txt
+          # Report TSan races as warnings; full gate will be enabled after baseline is clean
+          if grep -q "ThreadSanitizer: data race" dist/reports/tsan_report.txt; then
+            echo "::warning ::TSan detected data race(s). Review dist/reports/tsan_report.txt" | tee -a dist/reports/tsan_report.txt
+          else
+            echo "✅ No TSan data races detected" | tee -a dist/reports/tsan_report.txt
+          fi
+
+      # Run TSan on nodeagent separately (separate Cargo workspace)
+      - name: Run ThreadSanitizer on NodeAgent
+        run: |
+          echo "" >> dist/reports/tsan_report.txt
+          echo "=== NodeAgent TSan Run ==========================" >> dist/reports/tsan_report.txt
+          RUSTFLAGS="-Z sanitizer=thread" \
+          cargo +nightly test \
+            --manifest-path src/agent/nodeagent/Cargo.toml \
+            -Z build-std \
+            --target x86_64-unknown-linux-gnu \
+            2>&1 | tee -a dist/reports/tsan_report.txt || true
+
+      - name: Upload TSan report as evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsan-sanitizer-report
+          path: dist/reports/tsan_report.txt

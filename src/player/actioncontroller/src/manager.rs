@@ -2,6 +2,7 @@
 * SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
 * SPDX-License-Identifier: Apache-2.0
 */
+use std::sync::Arc;
 use std::{collections::HashMap, thread, time::Duration};
 
 use crate::grpc::sender::pharos::request_network_pod;
@@ -26,6 +27,13 @@ const ETCD_NODES_PREFIX: &str = "nodes";
 const ETCD_SCHED_PREFIX: &str = "Schedule";
 const ETCD_CLUSTER_NODES_PREFIX: &str = "cluster/nodes";
 
+// Safety: Maximum number of consecutive reconcile attempts before escalating
+// to a permanent Error state and stopping retries.
+// ISO 26262 Part 6 §7.4.12 — Fault Reaction: a system must not retry
+// indefinitely on a persistent failure; it must escalate and halt.
+// req-traceability: comp_req__ac__retry_limit
+const MAX_RECONCILE_RETRIES: u32 = 3;
+
 // Node types
 const NODE_TYPE_NODEAGENT: &str = "nodeagent";
 const NODE_ROLE_NODEAGENT: i32 = 2;
@@ -42,7 +50,10 @@ pub struct ActionControllerManager {
     pub nodeagent_nodes: Vec<String>,
     /// StateManager sender for scenario state changes
     state_sender: StateManagerSender,
-    // Add other fields as needed
+    /// Safety: Per-scenario consecutive reconcile failure counter.
+    /// When a scenario's counter reaches MAX_RECONCILE_RETRIES, reconcile
+    /// is halted and an Error state is escalated to StateManager.
+    pub retry_counts: Arc<std::sync::Mutex<HashMap<String, u32>>>,
 }
 #[allow(dead_code)]
 impl ActionControllerManager {
@@ -60,6 +71,7 @@ impl ActionControllerManager {
         Self {
             nodeagent_nodes: Vec::new(),
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         }
     }
 
@@ -459,6 +471,8 @@ impl ActionControllerManager {
     /// Returns an error if:
     /// - The scenario does not exist
     /// - The reconciliation action fails
+    // req-traceability: comp_req__ac__reconcile_do
+    // req-traceability: comp_req__ac__retry_limit
     pub async fn reconcile_do(
         &self,
         scenario_name: String,
@@ -485,6 +499,31 @@ impl ActionControllerManager {
             .into());
         }
 
+        // Safety: Check retry limit before attempting reconcile.
+        // If a scenario has failed MAX_RECONCILE_RETRIES times in a row,
+        // stop retrying and escalate to a permanent error — prevents infinite loops.
+        {
+            let counts = self.retry_counts.lock().unwrap();
+            if let Some(&count) = counts.get(&scenario_name) {
+                if count >= MAX_RECONCILE_RETRIES {
+                    logd!(
+                        5,
+                        "[SAFETY] Scenario '{}' has failed reconcile {} times. \
+                         Halting retries — escalate to Error state. \
+                         (ISO 26262 Part 6 §7.4.12 — Fault Reaction)",
+                        scenario_name,
+                        count
+                    );
+                    return Err(format!(
+                        "Scenario '{}' exceeded max reconcile retries ({}). \
+                         Manual intervention required.",
+                        scenario_name, MAX_RECONCILE_RETRIES
+                    )
+                    .into());
+                }
+            }
+        }
+
         let etcd_scenario_key: String = format!("scenario/{}", scenario_name);
         let scenario_str = common::etcd::get(&etcd_scenario_key).await?;
         let scenario: Scenario = serde_yaml::from_str(&scenario_str)?;
@@ -493,13 +532,13 @@ impl ActionControllerManager {
         let package_str = common::etcd::get(&etcd_package_key).await?;
         let package: Package = serde_yaml::from_str(&package_str)?;
 
+        let mut workload_failed = false;
         for mi in package.get_models() {
             let model_name = format!("{}.service", mi.get_name());
             let model_node = mi.get_node();
             let node_type = if self.nodeagent_nodes.contains(&model_node) {
                 "nodeagent"
             } else {
-                // Log warning for unknown node types and skip processing
                 logd!(
                     4,
                     "Warning: Node '{}' is not explicitly configured. Skipping deployment.",
@@ -509,13 +548,40 @@ impl ActionControllerManager {
             };
 
             if desired == Status::Running {
-                self.start_workload(&model_name, &model_node, node_type)
-                    .await?;
+                if let Err(e) = self.start_workload(&model_name, &model_node, node_type).await {
+                    logd!(5, "start_workload failed for '{}': {:?}", model_name, e);
+                    workload_failed = true;
+                }
+            }
+        }
+
+        // Safety: Update retry counter based on outcome.
+        {
+            let mut counts = self.retry_counts.lock().unwrap();
+            if workload_failed {
+                let entry = counts.entry(scenario_name.clone()).or_insert(0);
+                *entry += 1;
+                logd!(
+                    4,
+                    "[SAFETY] Scenario '{}' reconcile failure count: {}/{}",
+                    scenario_name,
+                    entry,
+                    MAX_RECONCILE_RETRIES
+                );
+                return Err(format!(
+                    "One or more workloads failed to start for scenario '{}'",
+                    scenario_name
+                )
+                .into());
+            } else {
+                // Reset counter on success
+                counts.remove(&scenario_name);
             }
         }
 
         Ok(())
     }
+
 
     /// Creates a new workload for the specified scenario
     ///

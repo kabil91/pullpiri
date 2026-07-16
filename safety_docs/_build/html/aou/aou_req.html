@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pullpiri Assumptions of Use &#8212; Pullpiri Functional Safety Documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pullpiri Component Requirements" href="../requirements/comp_req.html" />
+    <link rel="prev" title="Pullpiri Safety Manual" href="../safety_manual.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="pullpiri-assumptions-of-use">
+<h1>Pullpiri Assumptions of Use<a class="headerlink" href="#pullpiri-assumptions-of-use" title="Link to this heading">¶</a></h1>
+<p>Pullpiri is developed as a <strong>Safety Element out of Context (SEooC)</strong> targeting
+<strong>ASIL-B (software)</strong>. The integrating vehicle platform must fulfil every
+assumption below for Pullpiri’s safety properties to be valid.</p>
+<div class="need_container docutils container" id="SNCB-8d9b6dd7">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__posix_os">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">POSIX-Qualified OS Required</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__posix_os" title="aou_req__pullpiri__posix_os">aou_req__pullpiri__posix_os</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri processes rely on POSIX thread scheduling and signal
+semantics. Without a qualified OS layer, scheduling determinism
+and process isolation guarantees are invalidated.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall provide a POSIX-qualified operating system
+(e.g. QNX SDP or a Linux kernel with an RT patch qualified to ASIL-B) that
+guarantees deterministic thread scheduling and process isolation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-944d04aa">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__etcd_replication">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">etcd Consensus Cluster Required</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__etcd_replication" title="aou_req__pullpiri__etcd_replication">aou_req__pullpiri__etcd_replication</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri stores all scenario, package, and model configuration
+in etcd. A single-node etcd instance has no fault tolerance.
+A 3-node quorum ensures atomic write guarantees (Raft consensus)
+so a mid-write crash cannot leave partially written configuration.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall deploy etcd as a minimum 3-node Raft quorum
+cluster. Single-node etcd deployments are not permitted for ASIL-B use.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-b9b53efd">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__mtls_grpc">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">mTLS on all gRPC Channels</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__mtls_grpc" title="aou_req__pullpiri__mtls_grpc">aou_req__pullpiri__mtls_grpc</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri gRPC endpoints (apiserver, statemanager, actioncontroller,
+filtergateway, nodeagent) accept unauthenticated connections by
+default. Without mTLS, any vehicle network participant can inject
+commands or corrupt state.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">YES</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall configure mutual TLS (mTLS) on all Pullpiri
+gRPC and REST endpoints at deployment time via sidecar proxy or platform
+network policy.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-78be1f40">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__cgroup_isolation">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">OS cgroup Resource Isolation for apiserver</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__cgroup_isolation" title="aou_req__pullpiri__cgroup_isolation">aou_req__pullpiri__cgroup_isolation</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The apiserver accepts external REST requests. Without CPU and
+memory limits, a malformed or malicious payload could exhaust
+system resources, starving safety-critical services (Freedom
+from Interference violation).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall enforce Linux cgroup v2 (or equivalent OS
+partitioner) limits on the apiserver process: CPUQuota ≤ 50% and
+MemoryMax ≤ 128 MiB.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-bf4ce09d">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__watchdog">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">External Process Watchdog Required</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__watchdog" title="aou_req__pullpiri__watchdog">aou_req__pullpiri__watchdog</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri components do not implement an internal hardware
+watchdog. Without an external supervisor, a deadlocked or
+crashed process will not be detected and restarted within the
+ASIL-B reaction time budget.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall provide an OS-level watchdog (e.g. systemd
+watchdog with WatchdogSec=, QNX SLM, or equivalent) that monitors all
+Pullpiri service processes and triggers restart or safe-state transition
+on missed keepalive signals.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-b53f4b95">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__dds_network">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">DDS Network Liveliness QoS Required</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__dds_network" title="aou_req__pullpiri__dds_network">aou_req__pullpiri__dds_network</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The FilterGateway subscribes to vehicle DDS topics. If the
+DDS publisher goes silent without a liveliness event, the
+FilterGateway will wait indefinitely for a signal that will
+never arrive, causing the scenario to stall in WAITING state.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating DDS network shall configure Liveliness QoS on all
+vehicle data topics consumed by Pullpiri FilterGateway so that topic
+silence is detected and reported within the application’s worst-case
+reaction time.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-d8684943">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__podman_version">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Podman Runtime Version ≥ 4.x Required</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__podman_version" title="aou_req__pullpiri__podman_version">aou_req__pullpiri__podman_version</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri NodeAgent uses the Podman v4 libpod REST API
+(``/v4.0.0/libpod/containers/{id}/restart``) for container
+lifecycle management. Older Podman versions may not expose this
+endpoint or may have incompatible restart semantics, invalidating
+the container recovery guarantee required by SG_002.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall deploy Podman version ≥ 4.0.0. NodeAgent
+container lifecycle operations (start, restart, inspect, list) are
+verified only against the Podman v4 libpod REST API.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-9b53e5e8">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__no_exceptions">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">No Exceptions Policy for Safety Modules</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__no_exceptions" title="aou_req__pullpiri__no_exceptions">aou_req__pullpiri__no_exceptions</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri is implemented in Rust, which uses panics instead of
+exceptions. All Pullpiri modules must never silence panics
+(no ``catch_unwind`` in safety paths). A panic must propagate
+and terminate the process so the OS watchdog can detect and
+restart the module within the ASIL-B reaction window.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall NOT wrap any Pullpiri module in an exception
+catcher or panic suppressor. Panics must terminate the Pullpiri process
+so that <code class="docutils literal notranslate"><span class="pre">aou_req__pullpiri__watchdog</span></code> can trigger recovery.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-39b74a56">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__error_reaction">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Error Reaction – Safety Apps Must Handle All Return Values</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__error_reaction" title="aou_req__pullpiri__error_reaction">aou_req__pullpiri__error_reaction</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Safety applications that send commands to Pullpiri modules
+must always inspect the ``Result&lt;T, E&gt;`` or gRPC status code
+returned by Pullpiri APIs. Silently ignoring errors from
+safety-critical calls violates ISO 26262 §7.4.4 (error detection).</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>External safety applications integrated with Pullpiri SHALL read and
+react to all return values from Pullpiri gRPC and REST APIs. Errors must
+trigger application-level safe-state actions within the system’s worst-case
+reaction time budget.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-66047d4f">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_aou_req docutils align-default" id="aou_req__pullpiri__flow_monitoring">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">Assumption of Use</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Flow Monitoring – Alive Signal Required From All Modules</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#aou_req__pullpiri__flow_monitoring" title="aou_req__pullpiri__flow_monitoring">aou_req__pullpiri__flow_monitoring</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_reqtype"><span class="needs_label">reqtype: </span><span class="needs_data">Non-Functional</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Pullpiri StateManager implements an AtomicU64 heartbeat counter
+(comp_req__sm__heartbeat) that advances on every processed gRPC
+message. The OS watchdog monitors the ``[HEARTBEAT]`` log line
+within a 60-second window. The same alive-signal pattern must be
+applied to all five modules (APIServer, FilterGateway,
+ActionController, NodeAgent) to achieve end-to-end program flow
+monitoring per ISO 26262 §7.4.9.</span></span></div>
+<div class="line"><span class="needs_safety"><span class="needs_label">safety: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_security"><span class="needs_label">security: </span><span class="needs_data">NO</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p>The integrating system shall configure per-process watchdog monitoring for
+all five Pullpiri modules. Each module’s alive signal must be verified
+within a 60-second window. If any module’s alive signal is absent, the
+system shall transition to a defined safe state.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Pullpiri Functional Safety</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../safety_manual.html">Pullpiri Safety Manual</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pullpiri Assumptions of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements/comp_req.html">Pullpiri Component Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../safety_analysis/fmea.html">Pullpiri Component FMEA</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../safety_analysis/dfa.html">Pullpiri Dependent Failure Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ci_regression_scope.html">Pullpiri CI Regression Scope</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../safety_manual.html" title="previous chapter">Pullpiri Safety Manual</a></li>
+      <li>Next: <a href="../requirements/comp_req.html" title="next chapter">Pullpiri Component Requirements</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/aou/aou_req.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

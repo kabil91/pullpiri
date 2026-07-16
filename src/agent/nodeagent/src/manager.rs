@@ -238,6 +238,15 @@ impl NodeAgentManager {
     }
 }
 
+/// Maximum number of consecutive local reconciliation attempts before Pullpiri
+/// declares a container permanently failed and stops recovery attempts.
+///
+/// This cap prevents infinite restart loops for containers that fail repeatedly.
+/// After MAX_LOCAL_RETRIES consecutive failures the container is escalated to
+/// a permanent Error state, identical to ActionController's MAX_RECONCILE_RETRIES.
+// req-traceability: comp_req__na__local_reconcile
+const MAX_LOCAL_RETRIES: u32 = 3;
+
 /// Tracks restart backoff state for a single container.
 #[derive(Clone)]
 struct BackoffState {
@@ -245,12 +254,16 @@ struct BackoffState {
     restart_count: u32,
     /// Timestamp of the most recent successful restart, or `None` if never restarted.
     last_restart_time: Option<std::time::SystemTime>,
+    /// Number of consecutive restart *failures* (reset to 0 on any success).
+    /// When this reaches MAX_LOCAL_RETRIES the container is declared permanently failed.
+    consecutive_failures: u32,
 }
 
 /// Calculates the required backoff wait time for the next restart attempt.
 ///
 /// Formula: `min(10 * 2^restart_count, 300)` seconds.
 /// - 0 restarts → 10 s, 1 → 20 s, 2 → 40 s, …, ≥5 → 300 s (cap).
+// req-traceability: comp_req__na__backoff
 fn calculate_backoff(restart_count: u32) -> std::time::Duration {
     let base: u64 = 10;
     let wait_seconds = std::cmp::min(base * 2_u64.pow(restart_count), 300);
@@ -265,13 +278,18 @@ fn calculate_backoff(restart_count: u32) -> std::time::Duration {
 /// (the Podman restart API preserves the same container ID). If the container is completely
 /// missing (removed from Podman), `handle_missing_container` recreates it from the stored
 /// pod YAML and updates the cache with the new container ID.
+// req-traceability: comp_req__na__local_reconcile
 pub async fn reconciliation_loop(desired_states_cache: Arc<Mutex<HashMap<String, DesiredState>>>) {
     use crate::resource::container::{get_inspect, get_list};
     use tokio::time::{sleep, Duration};
 
     // In-memory backoff state per container ID.
+    // Also tracks consecutive failure counts for the MAX_LOCAL_RETRIES cap.
     let backoff_states: Arc<Mutex<HashMap<String, BackoffState>>> =
         Arc::new(Mutex::new(HashMap::new()));
+
+    // Tracks containers that have been permanently failed due to retry cap.
+    let mut permanently_failed: std::collections::HashSet<String> = std::collections::HashSet::new();
 
     loop {
         // Clone desired states and release the lock immediately for better concurrency.
@@ -294,6 +312,16 @@ pub async fn reconciliation_loop(desired_states_cache: Arc<Mutex<HashMap<String,
         for (pod_name, desired) in &desired_states {
             if desired.container_id.is_empty() {
                 // Container has not been started yet; nothing to reconcile.
+                continue;
+            }
+
+            // Skip containers that have permanently exceeded the local retry cap.
+            if permanently_failed.contains(&desired.container_id) {
+                eprintln!(
+                    "[Reconciliation] Container '{}' for pod '{}' is permanently failed \
+                     (exceeded MAX_LOCAL_RETRIES={}), skipping",
+                    desired.container_id, pod_name, MAX_LOCAL_RETRIES
+                );
                 continue;
             }
 
@@ -352,7 +380,10 @@ pub async fn reconciliation_loop(desired_states_cache: Arc<Mutex<HashMap<String,
                     );
                     // Podman's restart API restarts the container in-place, preserving the
                     // same container ID. No cache update needed.
-                    handle_exited_container(desired, exit_code, Arc::clone(&backoff_states)).await;
+                    let perm_failed = handle_exited_container(desired, exit_code, Arc::clone(&backoff_states)).await;
+                    if perm_failed {
+                        permanently_failed.insert(desired.container_id.clone());
+                    }
                 }
                 _ => {
                     // Container is running normally; nothing to do.
@@ -438,11 +469,13 @@ async fn handle_missing_container(desired: &DesiredState) -> Option<String> {
 /// - Formula: `min(10 * 2^restart_count, 300)` seconds between restarts.
 /// - If the elapsed time since the last restart is ≥ 300 s (5 min), restart attempts
 ///   are stopped permanently for vehicle-environment safety.
+/// Returns `true` if the container has permanently exceeded MAX_LOCAL_RETRIES and should
+/// be removed from reconciliation, `false` otherwise.
 async fn handle_exited_container(
     desired: &DesiredState,
     exit_code: i32,
     backoff_states: Arc<Mutex<HashMap<String, BackoffState>>>,
-) {
+) -> bool {
     use crate::desired_state::RestartPolicy;
     use hyper::Body;
 
@@ -458,7 +491,7 @@ async fn handle_exited_container(
     );
 
     if !should_restart {
-        return;
+        return false;
     }
 
     // Read the current backoff state (or default) without holding the lock.
@@ -470,6 +503,7 @@ async fn handle_exited_container(
             .unwrap_or(BackoffState {
                 restart_count: 0,
                 last_restart_time: None,
+                consecutive_failures: 0,
             })
     };
 
@@ -486,7 +520,7 @@ async fn handle_exited_container(
                  stop restarting for vehicle safety",
                 desired.container_id
             );
-            return;
+            return false;
         }
 
         // Not yet past the required backoff delay — come back next loop iteration.
@@ -497,7 +531,7 @@ async fn handle_exited_container(
                 desired.container_id,
                 (required_backoff - elapsed).as_secs_f64()
             );
-            return;
+            return false;
         }
     }
 
@@ -515,22 +549,48 @@ async fn handle_exited_container(
                 "[Reconciliation] Container '{}' restarted successfully",
                 desired.container_id
             );
-            // Update backoff state only on success.
+            // Successful restart — reset consecutive_failures counter.
             let mut states = backoff_states.lock().await;
             states.insert(
                 desired.container_id.clone(),
                 BackoffState {
                     restart_count: backoff_state.restart_count + 1,
                     last_restart_time: Some(std::time::SystemTime::now()),
+                    consecutive_failures: 0, // reset on success
                 },
             );
+            false // not permanently failed
         }
         Err(e) => {
+            // Increment consecutive failure counter and check against cap.
+            let new_failures = backoff_state.consecutive_failures + 1;
             eprintln!(
-                "[Reconciliation] Failed to restart container '{}': {:?}",
-                desired.container_id, e
+                "[Reconciliation] Failed to restart container '{}': {:?} \
+                 (consecutive failure {}/{})",
+                desired.container_id, e, new_failures, MAX_LOCAL_RETRIES
             );
-            // Do not update backoff_state on failure so the next loop iteration retries.
+            let mut states = backoff_states.lock().await;
+            states.insert(
+                desired.container_id.clone(),
+                BackoffState {
+                    restart_count: backoff_state.restart_count,
+                    last_restart_time: backoff_state.last_restart_time,
+                    consecutive_failures: new_failures,
+                },
+            );
+            // ISO 26262 P1 safety rule: escalate to permanent Error state
+            // after MAX_LOCAL_RETRIES consecutive failures.
+            // req-traceability: comp_req__na__local_reconcile
+            if new_failures >= MAX_LOCAL_RETRIES {
+                eprintln!(
+                    "[SAFETY_ERROR] Container '{}' has exceeded MAX_LOCAL_RETRIES={} \
+                     consecutive failures. Declaring permanently failed. \
+                     Manual operator intervention required.",
+                    desired.container_id, MAX_LOCAL_RETRIES
+                );
+                return true; // signal permanent failure to reconciliation_loop
+            }
+            false
         }
     }
 }
@@ -980,6 +1040,7 @@ spec:
                 super::BackoffState {
                     restart_count: 0,
                     last_restart_time: Some(std::time::SystemTime::now()),
+                    consecutive_failures: 0,
                 },
             );
         }
@@ -1019,6 +1080,7 @@ spec:
                 super::BackoffState {
                     restart_count: 5,
                     last_restart_time: Some(past),
+                    consecutive_failures: 0,
                 },
             );
         }
@@ -1034,8 +1096,9 @@ spec:
 
     /// Verifies that `handle_exited_container` proceeds when no previous restart
     /// timestamp exists (first restart attempt) and no backoff state is pre-seeded.
-    /// Podman is unavailable, so the restart fails, but the function must not panic
-    /// and the backoff map must remain empty (state only updated on success).
+    /// Podman is unavailable, so the restart fails. The safety implementation MUST
+    /// insert a backoff state with consecutive_failures = 1 to track the failure
+    /// towards the MAX_LOCAL_RETRIES cap (ISO 26262 comp_req__na__local_reconcile).
     #[tokio::test]
     async fn test_handle_exited_container_first_restart_no_prior_state() {
         use crate::desired_state::RestartPolicy;
@@ -1053,9 +1116,14 @@ spec:
         // No pre-seeded state → function should attempt restart immediately.
         super::handle_exited_container(&desired, 1, Arc::clone(&backoff_states)).await;
 
-        // Podman is not running, so restart fails and backoff state is NOT inserted.
+        // Podman is not running so restart fails, but the safety implementation
+        // MUST insert a state with consecutive_failures = 1 to track towards the cap.
         let states = backoff_states.lock().await;
-        assert!(!states.contains_key("fresh-container"));
+        assert!(states.contains_key("fresh-container"),
+            "BackoffState must be inserted on first restart failure for safety tracking");
+        let state = states.get("fresh-container").unwrap();
+        assert_eq!(state.consecutive_failures, 1,
+            "consecutive_failures must be 1 after the first restart failure");
     }
 
     /// Verifies that `handle_exited_container` with `RestartPolicy::Never` does not

@@ -1,0 +1,14 @@
+# rust-toolchain.toml
+# SPDX-FileCopyrightText: Copyright 2024 LG Electronics Inc.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Pins the Rust compiler version for Pullpiri across all developers and CI runners.
+# Required for ISO 26262 Part 8 §11 Tool Qualification — ensures identical code
+# generation across all build environments, making the compiler output reproducible
+# and auditable.
+#
+# To upgrade: update 'channel' below, run 'rustup update', and re-verify the test suite.
+
+[toolchain]
+channel = "1.92.0"
+components = ["rustfmt", "clippy", "rust-src"]

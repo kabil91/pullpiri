@@ -173,6 +173,7 @@ mod tests {
     use tokio;
 
     #[tokio::test]
+    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_list_success() {
         let result = get_list().await;
         assert!(result.is_ok());
@@ -187,6 +188,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_inspect_success() {
         let list = get_list().await.unwrap();
         if let Some(container) = list.first() {
@@ -208,6 +210,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_inspect_contains_expected_keys() {
         let hostname: String = String::from_utf8_lossy(
             &std::process::Command::new("hostname")

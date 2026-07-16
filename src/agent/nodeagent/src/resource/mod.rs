@@ -195,6 +195,7 @@ mod tests {
     use tokio;
 
     #[tokio::test]
+    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_with_valid_path() {
         let result: Result<Bytes, Error> = get("/v1.0/version").await;
         assert!(result.is_ok());

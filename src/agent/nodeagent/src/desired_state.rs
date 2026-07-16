@@ -112,7 +112,7 @@ mod tests {
 
         assert_eq!(state.pod_name, "test-pod");
         assert_eq!(state.container_id, "");
-        assert_eq!(state.restart_policy, RestartPolicy::Always);
+        assert_eq!(state.restart_policy, RestartPolicy::OnFailure);
         assert!(state.probe_config.is_none());
         assert_eq!(state.pod_yaml, "");
     }

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pullpiri Dependent Failure Analysis &#8212; Pullpiri Functional Safety Documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pullpiri CI Regression Scope" href="../ci_regression_scope.html" />
+    <link rel="prev" title="Pullpiri Component FMEA" href="fmea.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="pullpiri-dependent-failure-analysis">
+<h1>Pullpiri Dependent Failure Analysis<a class="headerlink" href="#pullpiri-dependent-failure-analysis" title="Link to this heading">¶</a></h1>
+<p>The DFA identifies <strong>Dependent Failure Initiators (DFI)</strong> — shared causes
+that could simultaneously compromise multiple Pullpiri components, defeating
+the Freedom from Interference (FFI) guarantee required by ISO 26262.</p>
+<div class="need_container docutils container" id="SNCB-874006c4">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_dfa docutils align-default" id="comp_saf_dfa__pullpiri__etcd_full_disk">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">DFA Failure Initiator</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Shared etcd Node – Disk Full Kills Both Write Path and Diagnostics WAL</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_dfa__pullpiri__etcd_full_disk" title="comp_saf_dfa__pullpiri__etcd_full_disk">comp_saf_dfa__pullpiri__etcd_full_disk</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__api__yaml_validation, comp_req__sm__cluster_reconcile</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">aou_req__pullpiri__etcd_replication</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_failure_id"><span class="needs_label">failure_id: </span><span class="needs_data">dfi__common_cause__disk_exhaustion</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">If the disk hosting etcd fills up, two simultaneous failures
+occur. The etcd Write-Ahead Log (WAL) cannot accept new
+entries, causing all apiserver write operations to fail.
+Simultaneously, the apiserver diagnostics module cannot write
+log files, losing the diagnostic trail. Both the operational
+path (scenario registration) and the safety evidence path
+(diagnostics) fail together from a single cause.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">aou_req__pullpiri__etcd_replication requires a 3-node Raft
+cluster. In a properly configured multi-node etcd deployment,
+the WAL and data are distributed. Disk exhaustion on a single
+node causes that node to leave the quorum, but the remaining
+two nodes maintain quorum and continue serving writes.
+The integrating system must also configure etcd storage quotas
+and OS-level disk space monitoring as complementary measures.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/artifact/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">apply()</span></code>
+<strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/diagnostics.rs</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-0fc0ced6">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_dfa docutils align-default" id="comp_saf_dfa__pullpiri__network_partition">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">DFA Failure Initiator</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Network Partition – FilterGateway and NodeAgent Both Lose Connectivity</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_dfa__pullpiri__network_partition" title="comp_saf_dfa__pullpiri__network_partition">comp_saf_dfa__pullpiri__network_partition</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__fg__condition_eval, comp_req__na__local_reconcile</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">aou_req__pullpiri__watchdog, aou_req__pullpiri__dds_network</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_failure_id"><span class="needs_label">failure_id: </span><span class="needs_data">dfi__common_cause__network_partition</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">A network partition between the host node and the guest
+nodes simultaneously isolates the FilterGateway from the
+DDS vehicle signal bus AND isolates the NodeAgent from the
+ActionController. Scenarios stall in WAITING (FilterGateway
+sees no DDS signals) while containers may be running in an
+unmonitored state (NodeAgent reports no status to StateManager).
+Both independent safety paths are disabled by the same fault.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">aou_req__pullpiri__watchdog ensures the OS-level watchdog detects
+that Pullpiri processes are no longer communicating (missed
+keepalive) and triggers a system-level safe state transition.
+aou_req__pullpiri__dds_network requires DDS Liveliness QoS so
+the FilterGateway receives a network-loss notification rather
+than silently stalling. Together these ensure the vehicle
+transitions to a defined safe state rather than remaining in
+an undefined partitioned state.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/filter/mod.rs</span></code>
+<strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-121c0302">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_dfa docutils align-default" id="comp_saf_dfa__pullpiri__podman_daemon_crash">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">DFA Failure Initiator</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Podman Daemon Crash – NodeAgent Loses Container Lifecycle Control</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_dfa__pullpiri__podman_daemon_crash" title="comp_saf_dfa__pullpiri__podman_daemon_crash">comp_saf_dfa__pullpiri__podman_daemon_crash</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__na__local_reconcile, comp_req__na__backoff</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">aou_req__pullpiri__watchdog, aou_req__pullpiri__podman_version</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_failure_id"><span class="needs_label">failure_id: </span><span class="needs_data">dfi__common_cause__podman_daemon_failure</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">If the Podman daemon process crashes or becomes unresponsive,
+all NodeAgent container lifecycle API calls fail.
+NodeAgent reconciliation enters continuous error mode:
+``get_list()`` returns ``Err`` and ``handle_missing_container``
+attempts all fail. Without the Podman daemon, NodeAgent cannot
+recover crashed workload containers, violating SG_002.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Integrator shall configure Podman as a systemd service with
+``Restart=on-failure`` and ``RestartSec=5s``. This ensures
+automatic restart of the Podman daemon within 5 seconds of a
+crash. ``aou_req__pullpiri__watchdog`` covers the case where
+Podman restart itself fails — the OS watchdog detects missed
+NodeAgent keepalives and triggers a system-level safe state.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Integrator Verification Steps</strong>:</p>
+<ol class="arabic simple">
+<li><p>Confirm <code class="docutils literal notranslate"><span class="pre">podman.service</span></code>/<code class="docutils literal notranslate"><span class="pre">podman.socket</span></code> has <code class="docutils literal notranslate"><span class="pre">Restart=on-failure</span></code>.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">kill</span> <span class="pre">podman</span></code>; verify Podman restarts within 10 s.</p></li>
+<li><p>Confirm NodeAgent resumes <code class="docutils literal notranslate"><span class="pre">[Reconciliation]</span></code> log entries after restart.</p></li>
+<li><p>Confirm OS watchdog fires if Podman does not recover within 60 s.</p></li>
+</ol>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-f786a482">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_dfa docutils align-default" id="comp_saf_dfa__pullpiri__host_network_fault">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">DFA Failure Initiator</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">Host OS Network Fault – gRPC and DDS Simultaneously Disconnected</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_dfa__pullpiri__host_network_fault" title="comp_saf_dfa__pullpiri__host_network_fault">comp_saf_dfa__pullpiri__host_network_fault</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__fg__dds_silence_detect, comp_req__sm__heartbeat,
+comp_req__ac__reconcile_do, comp_req__na__local_reconcile</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">aou_req__pullpiri__watchdog, aou_req__pullpiri__dds_network</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_failure_id"><span class="needs_label">failure_id: </span><span class="needs_data">dfi__common_cause__host_network_failure</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">A host OS network interface failure simultaneously
+disconnects DDS (FilterGateway stops receiving vehicle
+signals) and all gRPC channels (SM, AC, NA lose
+inter-module communication). All four modules are degraded
+by the same single fault: scenarios stall in WAITING,
+container reconciliation cannot report status, and the
+heartbeat log cannot be written. This defeats FFI.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">Integrator shall configure the OS-level network watchdog to
+monitor the Pullpiri host network interface. When the interface
+goes down, systemd ``WatchdogSec=60`` detects absence of
+inter-process keepalives and triggers a system-level safe
+state transition within the 60-second ASIL-B reaction window.
+``aou_req__pullpiri__dds_network`` ensures DDS Liveliness QoS
+signals network loss to FilterGateway, allowing orderly shutdown.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Integrator Verification Steps</strong>:</p>
+<ol class="arabic simple">
+<li><p>Configure <code class="docutils literal notranslate"><span class="pre">WatchdogSec=60</span></code> for all 5 Pullpiri systemd services.</p></li>
+<li><p>Simulate network loss (<code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">link</span> <span class="pre">set</span> <span class="pre">&lt;iface&gt;</span> <span class="pre">down</span></code>); verify all 5 services
+report watchdog keepalive failure within 60 s.</p></li>
+<li><p>Verify system transitions to defined safe state within 60 s reaction window.</p></li>
+<li><p>Restore network (<code class="docutils literal notranslate"><span class="pre">ip</span> <span class="pre">link</span> <span class="pre">set</span> <span class="pre">&lt;iface&gt;</span> <span class="pre">up</span></code>); verify all 5 services resume.</p></li>
+</ol>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/manager.rs</span></code> – DDS silence detection
+<strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – heartbeat probe</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Pullpiri Functional Safety</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../safety_manual.html">Pullpiri Safety Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aou/aou_req.html">Pullpiri Assumptions of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements/comp_req.html">Pullpiri Component Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fmea.html">Pullpiri Component FMEA</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pullpiri Dependent Failure Analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ci_regression_scope.html">Pullpiri CI Regression Scope</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="fmea.html" title="previous chapter">Pullpiri Component FMEA</a></li>
+      <li>Next: <a href="../ci_regression_scope.html" title="next chapter">Pullpiri CI Regression Scope</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/safety_analysis/dfa.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

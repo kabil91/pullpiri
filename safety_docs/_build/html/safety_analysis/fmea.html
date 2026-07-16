@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pullpiri Component FMEA &#8212; Pullpiri Functional Safety Documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=d1102ebc" />
+    <link rel="stylesheet" type="text/css" href="../_static/basic.css?v=b08954a9" />
+    <link rel="stylesheet" type="text/css" href="../_static/alabaster.css?v=27fed22d" />
+    <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-data-viewer/jsonview.bundle.css?v=f6ef2277" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/libs/html/datatables.min.css?v=4b4fd840" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_links.css?v=2150a916" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/needstable.css?v=5e1b6797" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_core.css?v=f5b60a78" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_style.css?v=92936fa5" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/common_css/need_toggle.css?v=5c6620df" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-needs/modern.css?v=803738c0" />
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview.bundle.js?v=18cd53c5"></script>
+    <script src="../_static/sphinx-data-viewer/jsonview_loader.js?v=f7ff7e7d"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables.min.js?v=8a4aee21"></script>
+    <script src="../_static/sphinx-needs/libs/html/datatables_loader.js?v=a2cae175"></script>
+    <script src="../_static/sphinx-needs/libs/html/sphinx_needs_collapse.js?v=dca66431"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pullpiri Dependent Failure Analysis" href="dfa.html" />
+    <link rel="prev" title="Pullpiri Component Requirements" href="../requirements/comp_req.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+
+  
+  
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <section id="pullpiri-component-fmea">
+<h1>Pullpiri Component FMEA<a class="headerlink" href="#pullpiri-component-fmea" title="Link to this heading">¶</a></h1>
+<p>This FMEA identifies failure modes in Pullpiri components that could
+affect vehicle scenario lifecycle safety. Each row references the
+existing mitigation mechanism traced to real Rust source code.</p>
+<section id="apiserver-failure-modes">
+<h2>APIServer Failure Modes<a class="headerlink" href="#apiserver-failure-modes" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-000ba1c0">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__api__etcd_write_fail">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – etcd Write Fails Mid-Transaction</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__api__etcd_write_fail" title="comp_saf_fmea__api__etcd_write_fail">comp_saf_fmea__api__etcd_write_fail</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__api__yaml_validation</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">aou_req__pullpiri__etcd_replication</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__etcd_write_partial</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">Scenario is written to etcd but Package write fails. Downstream
+components query a Scenario with no matching Package and cannot
+deploy the workload. System state is inconsistent.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">etcd Raft consensus atomicity on a 3-node quorum
+(aou_req__pullpiri__etcd_replication) rolls back any incomplete
+write on leader failure. No partial write persists.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: etcd leader crashes or network partitions between the Scenario
+write and the Package write in <code class="docutils literal notranslate"><span class="pre">apply()</span></code>.</p>
+<p><strong>Detectability</strong>: Automatic — etcd client returns an error on the failed
+write. The <code class="docutils literal notranslate"><span class="pre">apply()</span></code> function propagates the error to the REST caller (HTTP 500).</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/artifact/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">apply()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-29c4d749">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__api__etcd_unavailable">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – etcd Completely Unavailable at Startup</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__api__etcd_unavailable" title="comp_saf_fmea__api__etcd_unavailable">comp_saf_fmea__api__etcd_unavailable</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__api__connectivity_probe</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__api__connectivity_probe, aou_req__pullpiri__etcd_replication</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__etcd_connection_refused</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">APIServer cannot read or write any configuration. All
+scenario registration requests fail. The vehicle cannot
+register new ADAS scenarios during the affected period.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The connectivity probe detects unavailability immediately and
+returns an error to the caller. The 3-node etcd quorum
+(aou_req__pullpiri__etcd_replication) ensures quorum is
+maintained unless more than one node fails simultaneously.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: All etcd nodes restart simultaneously, or the network between
+APIServer and etcd is partitioned.</p>
+<p><strong>Detectability</strong>: Immediate — TCP connection probe returns false within
+3 seconds (bounded timeout in <code class="docutils literal notranslate"><span class="pre">check_service_connectivity()</span></code>).
+HTTP 503 returned to caller.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/diagnostics.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">check_service_connectivity()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-fb306134">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__api__node_unreachable">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">APIServer – NodeAgent Unreachable but Command Sent</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__api__node_unreachable" title="comp_saf_fmea__api__node_unreachable">comp_saf_fmea__api__node_unreachable</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__api__node_probe</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__api__node_probe, comp_req__sm__cluster_reconcile</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__grpc_timeout</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">If the APIServer sends a workload start command to an
+unreachable NodeAgent, the gRPC call blocks until timeout
+and returns an error. The workload is never started, but the
+StateManager may already have advanced the scenario state
+to ``running``, creating a state/reality mismatch.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">comp_req__api__node_probe causes the APIServer to reject the
+dispatch before sending if the node is unreachable.
+comp_req__sm__cluster_reconcile causes the StateManager to
+detect the resulting degraded Package state and re-trigger
+ActionController to retry.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/server/apiserver/src/diagnostics.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">check_node_agent_connectivity()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="filtergateway-failure-modes">
+<h2>FilterGateway Failure Modes<a class="headerlink" href="#filtergateway-failure-modes" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-9b12a320">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__fg__dds_parse_panic">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">FilterGateway – DDS Message with Non-Numeric Value (Parse Failure)</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__fg__dds_parse_panic" title="comp_saf_fmea__fg__dds_parse_panic">comp_saf_fmea__fg__dds_parse_panic</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__fg__condition_eval</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__fg__condition_eval</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">sw_fault__dds_parse_error</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">A DDS message arrives where a numeric field contains a
+non-numeric string (e.g. ``&quot;N/A&quot;`` instead of ``&quot;35.0&quot;``)
+for a condition that uses ``lt/le/ge/gt``. The parse fails.
+The scenario condition is never evaluated and the trigger
+is missed, leaving the feature in WAITING state.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">``meet_scenario_condition()`` uses Rust's ``parse::&lt;f32&gt;()``
+with explicit error mapping (``map_err``). A parse failure returns
+``Err(...)`` rather than panicking. The error is logged and the
+loop continues — the scenario stays in WAITING, which is the
+safer option vs triggering on bad data.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: DDS publisher firmware bug or sensor hardware fault produces
+non-numeric data in a numeric field.</p>
+<p><strong>Detectability</strong>: Immediate — <code class="docutils literal notranslate"><span class="pre">map_err</span></code> propagates the error, which is
+logged at level 3. The scenario stays in WAITING (observable via StateManager).</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/filter/mod.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">meet_scenario_condition()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-e737ebdf">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__fg__dds_silence">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">FilterGateway – DDS Feed Goes Silent (No Signal Received)</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__fg__dds_silence" title="comp_saf_fmea__fg__dds_silence">comp_saf_fmea__fg__dds_silence</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__fg__condition_eval</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__fg__dds_silence_detect, aou_req__pullpiri__dds_network</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__dds_topic_silence</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">No DDS signal arrives. The FilterGateway waits indefinitely.
+Active scenarios stall in WAITING state. The intended safety
+action (e.g. Lane Assist activation) never triggers.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">A 5-second ``tokio::time::timeout`` in ``process_dds_data()``
+detects silence and emits a ``[SAFETY]`` log event, enabling
+the external watchdog to escalate. DDS Liveliness QoS
+(aou_req__pullpiri__dds_network) provides a complementary
+network-layer silence notification. **Residual risk CLOSED.**</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: DDS publisher process crashes, or network partition between
+the DDS bus and the FilterGateway host node.</p>
+<p><strong>Detectability</strong>: Within 5 seconds — timeout fires and <code class="docutils literal notranslate"><span class="pre">[SAFETY]</span></code> log
+appears. External watchdog monitors for this log pattern.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/filtergateway/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">process_dds_data()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="statemanager-failure-modes">
+<h2>StateManager Failure Modes<a class="headerlink" href="#statemanager-failure-modes" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-fa87f2bb">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__sm__heartbeat_missing">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">StateManager – Event Loop Deadlock / Freeze (No Heartbeat)</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__sm__heartbeat_missing" title="comp_saf_fmea__sm__heartbeat_missing">comp_saf_fmea__sm__heartbeat_missing</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__sm__heartbeat</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__sm__heartbeat, aou_req__pullpiri__watchdog</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">sw_fault__event_loop_deadlock</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">The StateManager gRPC receiver loop acquires a Mutex and
+blocks indefinitely (deadlock with another task holding the
+same lock, or a long-running handler). No state changes are
+processed. All upstream components (APIServer, FilterGateway)
+send state changes that are never acknowledged. Scenarios
+silently stall with no error.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">comp_req__sm__heartbeat uses a shared ``AtomicU64`` counter that
+``process_grpc_requests`` increments on every processed message.
+A separate heartbeat task reads this counter every 30 seconds
+and compares it to the previous value. If the counter has not
+advanced, the heartbeat emits a ``[HEARTBEAT] WARNING`` log at
+severity 5. On a multi-threaded Tokio runtime (``#[tokio::main]``
+default), the heartbeat task runs on its own worker thread and
+will correctly detect a deadlocked processing loop even though
+the deadlocked task is stuck. On a single-threaded runtime, the
+external OS watchdog (``aou_req__pullpiri__watchdog``) serves as
+the fallback — it detects the absence of any ``[HEARTBEAT]``
+log within a 60-second window.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: Mutex contention between tasks in <code class="docutils literal notranslate"><span class="pre">process_grpc_requests</span></code>,
+a future that never completes, or a blocking synchronous call inside
+an async handler.</p>
+<p><strong>Detectability</strong>: Within 30 seconds — heartbeat task detects stale counter
+and emits <code class="docutils literal notranslate"><span class="pre">[HEARTBEAT]</span> <span class="pre">WARNING</span></code> log. Within 60 seconds — external OS
+watchdog detects absence of <code class="docutils literal notranslate"><span class="pre">[HEARTBEAT]</span></code> log entirely.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – heartbeat task in <code class="docutils literal notranslate"><span class="pre">run()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-43ce313d">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__sm__channel_close">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">StateManager – gRPC Channel Drops Unexpectedly</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__sm__channel_close" title="comp_saf_fmea__sm__channel_close">comp_saf_fmea__sm__channel_close</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__sm__graceful_shutdown</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__sm__graceful_shutdown</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__grpc_channel_close</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">If the upstream component (e.g. apiserver) crashes and
+closes its channel, the StateManager's ``rx.recv()`` returns
+``None``. Without explicit handling, the processing loop
+would spin indefinitely on a closed channel or panic.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">comp_req__sm__graceful_shutdown mandates that the processing loop
+detects ``None`` from ``recv()`` and performs an orderly exit
+rather than looping or panicking. The channel-close handling in
+``manager.rs`` implements this controlled degradation path.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/statemanager/src/manager.rs</span></code> – channel-close in <code class="docutils literal notranslate"><span class="pre">run()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="actioncontroller-failure-modes">
+<h2>ActionController Failure Modes<a class="headerlink" href="#actioncontroller-failure-modes" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-4f974b11">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__ac__etcd_unavailable">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">ActionController – etcd Unavailable at Reconcile Time</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__ac__etcd_unavailable" title="comp_saf_fmea__ac__etcd_unavailable">comp_saf_fmea__ac__etcd_unavailable</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__ac__reconcile_do</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__ac__retry_limit, aou_req__pullpiri__etcd_replication</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">comm_fault__etcd_connection_lost</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">``reconcile_do()`` calls ``common::etcd::get()`` to load the
+Scenario and Package definitions. If etcd is unreachable at
+this moment, the function returns an error immediately. The
+workload is not started. The retry counter increments.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The retry limit (comp_req__ac__retry_limit) caps the number of
+attempts at 3, preventing an infinite loop on persistent etcd
+outage. The 3-node etcd quorum (aou_req__pullpiri__etcd_replication)
+ensures quorum is maintained unless more than 1 node fails.
+A transient etcd blip resolves within one retry cycle.</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: etcd network partition, quorum lost, or etcd process OOM-killed.</p>
+<p><strong>Detectability</strong>: Immediate — <code class="docutils literal notranslate"><span class="pre">etcd::get()</span></code> returns <code class="docutils literal notranslate"><span class="pre">Err</span></code> which is
+propagated. The retry counter and <code class="docutils literal notranslate"><span class="pre">[SAFETY]</span></code> log after 3 failures make
+the failure visible.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/actioncontroller/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconcile_do()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-c3f0c6ac">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__ac__infinite_retry">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">ActionController – Workload Continuously Crashes, Retry Limited</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__ac__infinite_retry" title="comp_saf_fmea__ac__infinite_retry">comp_saf_fmea__ac__infinite_retry</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__ac__reconcile_do</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__ac__retry_limit, comp_req__na__backoff</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">yes</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">sw_fault__infinite_restart_loop</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">A container with a persistent defect crashes immediately on
+every start. Without a retry limit, the ActionController would
+call ``start_workload()`` indefinitely, consuming CPU and
+network resources without escalating to a permanent fault state.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">comp_req__ac__retry_limit adds a ``MAX_RECONCILE_RETRIES = 3``
+per-scenario failure counter inside ``reconcile_do()``. After 3
+consecutive failures the function returns an error and logs a
+SAFETY escalation event — no further retries occur until the
+counter is manually reset. comp_req__na__backoff (NodeAgent
+exponential backoff) limits the restart rate at node level as
+a complementary measure. **Residual risk CLOSED — code fix applied.**</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/player/actioncontroller/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconcile_do()</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="nodeagent-failure-modes">
+<h2>NodeAgent Failure Modes<a class="headerlink" href="#nodeagent-failure-modes" title="Link to this heading">¶</a></h2>
+<div class="need_container docutils container" id="SNCB-2d215ece">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__na__grpc_crash_mid_start">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">NodeAgent – gRPC Server Crashes While Container is Mid-Start</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__na__grpc_crash_mid_start" title="comp_saf_fmea__na__grpc_crash_mid_start">comp_saf_fmea__na__grpc_crash_mid_start</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__na__local_reconcile</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__na__local_reconcile</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">partial</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">sw_fault__grpc_crash_partial_start</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">ActionController calls ``start_workload()`` via gRPC. The
+NodeAgent gRPC server processes the request and calls Podman
+to create the container, but then the NodeAgent gRPC server
+crashes (OOM, panic) before sending the success response.
+ActionController receives a gRPC error and treats it as a
+failure (incrementing retry counter), but the container may
+actually be running. Next reconcile attempt starts a duplicate.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The reconciliation loop (comp_req__na__local_reconcile) runs every
+1 second and will detect the container in ``running`` state within
+1 second of the gRPC crash recovery. On the next ActionController
+reconcile, if ``start_workload()`` is called again, Podman will
+return an error for an already-running container, which is handled
+gracefully. **Partial — duplicate start attempt possible in the
+recovery window.**</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><dl class="simple">
+<dt><strong>Cause</strong>: NodeAgent OOM kill or unhandled panic in the gRPC server thread</dt><dd><p>during a concurrent start operation.</p>
+</dd>
+</dl>
+<p><strong>Detectability</strong>: Within 1 second — reconciliation loop detects container
+state regardless of gRPC channel health.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="need_container docutils container" id="SNCB-dcf18786">
+<table class="need needs_grid_simple needs_layout_clean needs_style_none needs_type_comp_saf_fmea docutils align-default" id="comp_saf_fmea__na__container_crash">
+<tbody>
+<tr class="need head row-odd"><td class="need head"><div class="needs_head line-block">
+<div class="line"><span><span class="needs_type_name"><span class="needs_data">FMEA Failure Mode</span></span>: </span><strong><span><span class="needs_title"><span class="needs_data">NodeAgent – Container Exits Unexpectedly</span></span></span></strong><span> <span class="needs-id"><a class="reference internal" href="#comp_saf_fmea__na__container_crash" title="comp_saf_fmea__na__container_crash">comp_saf_fmea__na__container_crash</a></span>  <span class="needs needs_collapse" id="target__show__meta"><span class="needs collapsed"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-down-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="8 12 12 16 16 12"></polyline><line x1="12" y1="8" x2="12" y2="16"></line></svg></span><span class="needs visible collapse_is_hidden"><svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right-circle"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg></span></span> </span></div>
+</div>
+</td>
+</tr>
+<tr class="need meta row-even"><td class="need meta"><div class="needs_meta line-block">
+<div class="line"><span><span><div class="line"><span class="needs_status"><span class="needs_label">status: </span><span class="needs_data">valid</span></span></div>
+<div class="line"><span class="needs_safety_level"><span class="needs_label">safety_level: </span><span class="needs_data">ASIL_B</span></span></div>
+<div class="line"><span class="needs_violates"><span class="needs_label">violates: </span><span class="needs_data">comp_req__na__local_reconcile</span></span></div>
+<div class="line"><span class="needs_mitigated_by"><span class="needs_label">mitigated_by: </span><span class="needs_data">comp_req__na__local_reconcile, comp_req__na__backoff</span></span></div>
+<div class="line"><span class="needs_sufficient"><span class="needs_label">sufficient: </span><span class="needs_data">partial</span></span></div>
+<div class="line"><span class="needs_fault_id"><span class="needs_label">fault_id: </span><span class="needs_data">sw_fault__container_exit</span></span></div>
+<div class="line"><span class="needs_failure_effect"><span class="needs_label">failure_effect: </span><span class="needs_data">A running container process crashes (OOM kill, unhandled
+panic, or kernel signal). The vehicle feature stops executing.
+Without local detection, the StateManager would see a stale
+``Running`` status and take no recovery action.</span></span></div>
+<div class="line"><span class="needs_rationale"><span class="needs_label">rationale: </span><span class="needs_data">The ``reconciliation_loop()`` detects ``exited``/``dead`` state
+within 1 second and calls Podman restart. ``calculate_backoff()``
+limits restart rate with exponential backoff capped at 300 s.
+**Partial — the reconciliation loop has no local retry cap
+(unlike ActionController which has MAX_RECONCILE_RETRIES = 3).
+The loop restarts indefinitely at the 300 s cap. Open action:
+add a local retry counter to NodeAgent reconcile loop, escalating
+to a permanent Error state after N consecutive failures.**</span></span></div>
+</span></span></div>
+<div class="line"><span></span></div>
+</div>
+</td>
+</tr>
+<tr class="need content row-odd"><td class="need content" colspan="1"><p><strong>Cause</strong>: Container application bug (unhandled panic), OOM kill by kernel,
+or kernel signal from an external process.</p>
+<p><strong>Detectability</strong>: Within 1 second — <code class="docutils literal notranslate"><span class="pre">get_list()</span></code> from Podman shows
+<code class="docutils literal notranslate"><span class="pre">exited</span></code> or <code class="docutils literal notranslate"><span class="pre">dead</span></code> state on the next reconcile tick.</p>
+<p><strong>Open Action</strong>: Add <code class="docutils literal notranslate"><span class="pre">MAX_LOCAL_RETRIES</span></code> to <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code>
+identical to ActionController pattern. Target: next safety sprint.</p>
+<p><strong>Source</strong>: <code class="docutils literal notranslate"><span class="pre">src/agent/nodeagent/src/manager.rs</span></code> – <code class="docutils literal notranslate"><span class="pre">reconciliation_loop()</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">Pullpiri Functional Safety</a></h1>
+
+
+
+
+
+
+
+
+
+<search id="searchbox" style="display: none" role="search">
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Search"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script><h3>Navigation</h3>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../safety_manual.html">Pullpiri Safety Manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../aou/aou_req.html">Pullpiri Assumptions of Use</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../requirements/comp_req.html">Pullpiri Component Requirements</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pullpiri Component FMEA</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#apiserver-failure-modes">APIServer Failure Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#filtergateway-failure-modes">FilterGateway Failure Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#statemanager-failure-modes">StateManager Failure Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#actioncontroller-failure-modes">ActionController Failure Modes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nodeagent-failure-modes">NodeAgent Failure Modes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dfa.html">Pullpiri Dependent Failure Analysis</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="../requirements/comp_req.html" title="previous chapter">Pullpiri Component Requirements</a></li>
+      <li>Next: <a href="dfa.html" title="next chapter">Pullpiri Dependent Failure Analysis</a></li>
+  </ul></li>
+</ul>
+</div>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &#169;.
+      
+      |
+      Powered by <a href="https://www.sphinx-doc.org/">Sphinx 9.1.0</a>
+      &amp; <a href="https://alabaster.readthedocs.io">Alabaster 1.0.0</a>
+      
+      |
+      <a href="../_sources/safety_analysis/fmea.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

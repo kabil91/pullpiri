@@ -882,6 +882,7 @@ impl StateMachine {
     }
 
     /// Validate state change request parameters
+    // req-traceability: comp_req__sm__validate_state
     fn validate_state_change(&self, state_change: &StateChange) -> Result<(), String> {
         if state_change.resource_name.trim().is_empty() {
             return Err("Resource name cannot be empty".to_string());

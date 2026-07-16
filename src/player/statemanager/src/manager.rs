@@ -46,6 +46,8 @@ use tokio::task;
 /// - Uses Arc<Mutex<mpsc::Receiver>> for safe multi-threaded access
 /// - Spawns dedicated async tasks for each message type
 /// - Ensures lock-free message processing with proper channel patterns
+use std::sync::atomic::{AtomicU64, Ordering};
+
 pub struct StateManagerManager {
     /// State machine for processing state transitions
     state_machine: Arc<Mutex<StateMachine>>,
@@ -64,6 +66,15 @@ pub struct StateManagerManager {
     /// - FilterGateway: Policy-driven state transitions and filtering decisions
     /// - ActionController: Action execution results and state confirmations
     rx_state_change: Arc<Mutex<mpsc::Receiver<StateChange>>>,
+
+    /// Safety: Per-message heartbeat counter for program flow monitoring.
+    ///
+    /// Incremented on every successfully dispatched ContainerList or StateChange
+    /// message inside process_container_list() and process_state_change().
+    /// The heartbeat task in run() reads this counter every 30 seconds and
+    /// emits a SAFETY event if it has not advanced (ISO 26262 §7.4.9).
+    // req-traceability: comp_req__sm__heartbeat
+    pub hb_counter: Arc<AtomicU64>,
 }
 
 impl StateManagerManager {
@@ -86,6 +97,7 @@ impl StateManagerManager {
             state_machine: Arc::new(Mutex::new(StateMachine::new())),
             rx_container: Arc::new(Mutex::new(rx_container)),
             rx_state_change: Arc::new(Mutex::new(rx_state_change)),
+            hb_counter: Arc::new(AtomicU64::new(0)),
         }
     }
 
@@ -177,6 +189,10 @@ impl StateManagerManager {
     /// This method is async and uses internal locking for state machine access.
     /// Multiple concurrent calls are safe but will be serialized at the state machine level.
     async fn process_state_change(&self, state_change: StateChange) {
+        // P4: Increment per-message heartbeat counter on every dispatched StateChange.
+        // This gives the heartbeat task sub-30-second visibility into processing progress.
+        // req-traceability: comp_req__sm__heartbeat
+        self.hb_counter.fetch_add(1, Ordering::Relaxed);
         // ========================================
         // STEP 1: RESOURCE TYPE VALIDATION
         // ========================================
@@ -480,6 +496,9 @@ impl StateManagerManager {
     /// 3. Evaluate model state based on container states
     /// 4. Update model states in ETCD if transitions occur
     async fn process_container_list(&self, container_list: ContainerList) {
+        // P4: Increment per-message heartbeat counter on every dispatched ContainerList.
+        // req-traceability: comp_req__sm__heartbeat
+        self.hb_counter.fetch_add(1, Ordering::Relaxed);
         logd!(2, "=== PROCESSING CONTAINER LIST ===");
         logd!(2, "  Node Name: {}", container_list.node_name);
         logd!(2, "  Container Count: {}", container_list.containers.len());
@@ -759,6 +778,7 @@ impl StateManagerManager {
     }
 
     /// Internal implementation of ActionController reconcile trigger
+    // req-traceability: comp_req__sm__cluster_reconcile
     async fn trigger_action_controller_reconcile_internal(
         &self,
         package_name: &str,
@@ -888,6 +908,7 @@ impl StateManagerManager {
                         }
                         None => {
                             // Channel closed - graceful shutdown
+                            // req-traceability: comp_req__sm__graceful_shutdown
                             logd!(
                                 4,
                                 "Container channel closed - shutting down container processing"
@@ -919,6 +940,7 @@ impl StateManagerManager {
                         }
                         None => {
                             // Channel closed - graceful shutdown
+                            // req-traceability: comp_req__sm__graceful_shutdown
                             logd!(
                                 4,
                                 "StateChange channel closed - shutting down state processing"
@@ -957,6 +979,7 @@ impl StateManagerManager {
             state_machine: Arc::clone(&self.state_machine),
             rx_container: Arc::clone(&self.rx_container),
             rx_state_change: Arc::clone(&self.rx_state_change),
+            hb_counter: Arc::clone(&self.hb_counter),
         }
     }
 
@@ -983,15 +1006,91 @@ impl StateManagerManager {
         let arc_self = Arc::new(self);
         let grpc_manager = Arc::clone(&arc_self);
 
-        // Spawn the main gRPC processing task
+        // Safety: Shared monotonic counter for heartbeat health probing.
+        // Re-use the struct's hb_counter field (incremented per-message in
+        // process_state_change and process_container_list) so the heartbeat
+        // task observes real per-message progress instead of a single end-of-loop bump.
+        // req-traceability: comp_req__sm__heartbeat
+        let hb_reader = Arc::clone(&arc_self.hb_counter);
+        let hb_writer = Arc::clone(&arc_self.hb_counter);
+
+        // Spawn the main gRPC processing task.
+        // The counter is incremented inside process_grpc_requests via the
+        // Arc<AtomicU64> so that each processed message advances it.
         let grpc_processor = tokio::spawn(async move {
+            // Expose the counter for process_grpc_requests to increment.
+            // Since process_grpc_requests is a method on self and we can't
+            // change its signature without touching the trait, we increment
+            // the counter around the call and rely on the 30-second check
+            // interval to detect stalls.
             if let Err(e) = grpc_manager.process_grpc_requests().await {
                 logd!(5, "Error in gRPC processor: {e:?}");
             }
+            // When process_grpc_requests returns (both channels closed),
+            // bump counter one final time so heartbeat sees progress.
+            hb_writer.fetch_add(1, Ordering::Relaxed);
         });
 
-        // Wait for the processing task to complete
+        // Safety: Heartbeat task that PROBES the gRPC processing health.
+        //
+        // Unlike a naive independent timer (which would keep ticking even
+        // when the processing loop is deadlocked on a multi-threaded Tokio
+        // runtime), this heartbeat checks whether the shared counter has
+        // advanced. If it hasn't changed in 30 seconds, the gRPC loop is
+        // provably stuck and a SAFETY event is emitted.
+        //
+        // On a multi-threaded runtime (#[tokio::main] default), this task
+        // runs on its own worker thread — a deadlocked Mutex in
+        // process_grpc_requests cannot prevent this check from executing.
+        //
+        // On a single-threaded runtime (flavor = "current_thread"), both
+        // tasks share one thread — a deadlocked process_grpc_requests will
+        // also block this heartbeat. In that case, the external OS watchdog
+        // (aou_req__pullpiri__watchdog) detects the absence of the
+        // [HEARTBEAT] log within its 60-second window.
+        //
+        // ISO 26262 Part 6 §7.4.9 — Watchdog / Alive Signal pattern.
+        // req-traceability: comp_req__sm__heartbeat
+        let heartbeat_task = tokio::spawn(async move {
+            use tokio::time::{interval, Duration};
+            const HEARTBEAT_INTERVAL_SECS: u64 = 30;
+            let mut ticker = interval(Duration::from_secs(HEARTBEAT_INTERVAL_SECS));
+            let mut last_seen: u64 = 0;
+
+            loop {
+                ticker.tick().await;
+                let current = hb_reader.load(Ordering::Relaxed);
+                if current == last_seen {
+                    // Counter has NOT advanced — processing loop may be stuck.
+                    logd!(
+                        5,
+                        "[HEARTBEAT] WARNING: StateManager gRPC processing \
+                         loop has not advanced in {}s (counter stuck at {}). \
+                         Possible deadlock or blocked I/O. External watchdog \
+                         should escalate if this persists. \
+                         (ISO 26262 §7.4.9)",
+                        HEARTBEAT_INTERVAL_SECS,
+                        current
+                    );
+                } else {
+                    // Counter has advanced — processing loop is alive.
+                    logd!(
+                        2,
+                        "[HEARTBEAT] StateManager event loop alive — \
+                         {} messages processed since last check (counter: {}). \
+                         Watchdog check-in every {}s. (ISO 26262 §7.4.9)",
+                        current - last_seen,
+                        current,
+                        HEARTBEAT_INTERVAL_SECS
+                    );
+                }
+                last_seen = current;
+            }
+        });
+
+        // Wait for the gRPC processing task to complete
         let result = grpc_processor.await;
+        heartbeat_task.abort(); // Cancel heartbeat cleanly when main loop exits
         match result {
             Ok(_) => {
                 logd!(4, "StateManagerManager stopped gracefully");
@@ -1004,6 +1103,7 @@ impl StateManagerManager {
         }
     }
 }
+
 
 /// Async action executor - runs in separate task
 ///

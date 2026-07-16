@@ -10,6 +10,7 @@ use std::time::Duration;
 use tokio::net::TcpStream;
 
 /// Check if a service is reachable at the given IP and port
+// req-traceability: comp_req__api__connectivity_probe
 pub async fn check_service_connectivity(ip: &str, port: u16) -> bool {
     let addr = format!("{}:{}", ip, port);
     logd!(2, "Checking connectivity to {}", addr);
@@ -31,6 +32,7 @@ pub async fn check_service_connectivity(ip: &str, port: u16) -> bool {
 }
 
 /// Check if NodeAgent is reachable at the given IP
+// req-traceability: comp_req__api__node_probe
 pub async fn check_node_agent_connectivity(ip: &str) -> bool {
     check_service_connectivity(ip, 47004).await
 }
