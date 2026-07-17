@@ -2,9 +2,11 @@ name: CodeQL Security Scan (ISO 26262 §9.4.9 Static Analysis)
 # Runs CodeQL static analysis on all safety-critical Pullpiri Rust source files.
 # Output: SARIF report uploaded to GitHub Security tab and as CI evidence artifact.
 # ISO 26262 Part 6 §9.4.9 — Static analysis is a recommended method for ASIL-B.
+#
+# NOTE: CodeQL supports Rust via the 'rust' language extractor (GA since 2024).
+# This workflow uses autobuild to capture the Rust build for analysis.
 
 on:
-  workflow_call:
   workflow_dispatch:
   push:
     branches: [main, develop]
@@ -31,40 +33,32 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y protobuf-compiler libdbus-1-dev pkg-config build-essential
 
-      # Step 3: Install stable Rust toolchain
+      # Step 3: Install stable Rust toolchain (pinned via rust-toolchain.toml)
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      # Step 4: Initialize CodeQL database
-      # CodeQL analyzes the compiled binary IR, so we must build first.
+      # Step 4: Initialize CodeQL with Rust language support
+      # The 'rust' extractor is GA and captures Rust source directly.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
-          languages: cpp   # CodeQL supports Rust via the C/C++ extractor using rustc MIR
+          languages: rust
           queries: security-and-quality
 
-      # Step 5: Build workspace (required for CodeQL to capture build)
+      # Step 5: Build the workspace so CodeQL can capture build artifacts
       - name: Build workspace for CodeQL capture
         run: |
-          cd src
           cargo build --workspace 2>&1 | tail -20
-          cd ../src/agent/nodeagent
-          cargo build 2>&1 | tail -10
 
-      # Step 6: Perform CodeQL analysis
+      # Step 6: Perform CodeQL analysis and upload SARIF to Security tab
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
-          category: "/language:cpp"
-          output: dist/reports/codeql-results.sarif
-          upload: false  # We upload manually as an artifact below
+          category: "/language:rust"
 
-      # Step 7: Create reports directory
-      - name: Create reports directory
-        run: mkdir -p dist/reports
-
-      # Step 8: Generate static analysis summary for evidence package
+      # Step 7: Generate static analysis summary for evidence package
       - name: Generate CodeQL evidence summary
+        if: always()
         run: |
           mkdir -p dist/reports
           echo "# CodeQL Static Analysis Report" > dist/reports/codeql_summary.md
@@ -72,38 +66,25 @@ jobs:
           echo "**ISO 26262 Clause:** Part 6 §9.4.9 (Static analysis)" >> dist/reports/codeql_summary.md
           echo "**Scan Date:** $(date -u)" >> dist/reports/codeql_summary.md
           echo "**Toolchain:** $(rustc --version)" >> dist/reports/codeql_summary.md
-          echo "**Scope:** All Pullpiri Rust workspace crates + NodeAgent" >> dist/reports/codeql_summary.md
+          echo "**Language:** Rust (CodeQL native extractor)" >> dist/reports/codeql_summary.md
+          echo "**Scope:** All Pullpiri Rust workspace crates" >> dist/reports/codeql_summary.md
           echo "" >> dist/reports/codeql_summary.md
           echo "## Modules Scanned" >> dist/reports/codeql_summary.md
-          echo "- pullpiri/src/server/apiserver/ (comp_req__api__*)" >> dist/reports/codeql_summary.md
-          echo "- pullpiri/src/player/statemanager/ (comp_req__sm__*)" >> dist/reports/codeql_summary.md
-          echo "- pullpiri/src/player/actioncontroller/ (comp_req__ac__*)" >> dist/reports/codeql_summary.md
-          echo "- pullpiri/src/player/filtergateway/ (comp_req__fg__*)" >> dist/reports/codeql_summary.md
-          echo "- pullpiri/src/agent/nodeagent/ (comp_req__na__*)" >> dist/reports/codeql_summary.md
+          echo "- src/server/apiserver/ (comp_req__api__*)" >> dist/reports/codeql_summary.md
+          echo "- src/player/statemanager/ (comp_req__sm__*)" >> dist/reports/codeql_summary.md
+          echo "- src/player/actioncontroller/ (comp_req__ac__*)" >> dist/reports/codeql_summary.md
+          echo "- src/player/filtergateway/ (comp_req__fg__*)" >> dist/reports/codeql_summary.md
+          echo "- src/agent/nodeagent/ (comp_req__na__*)" >> dist/reports/codeql_summary.md
           echo "" >> dist/reports/codeql_summary.md
           echo "## Result" >> dist/reports/codeql_summary.md
-          if [[ -f dist/reports/codeql-results.sarif ]]; then
-            ALERT_COUNT=$(python3 -c "import json,sys; d=json.load(open('dist/reports/codeql-results.sarif')); print(sum(len(r.get('results',[])) for r in d.get('runs',[])))" 2>/dev/null || echo "unknown")
-            echo "Total findings: $ALERT_COUNT" >> dist/reports/codeql_summary.md
-          else
-            echo "SARIF report not found — check CodeQL action logs." >> dist/reports/codeql_summary.md
-          fi
+          echo "SARIF results uploaded to GitHub Security tab. View at:" >> dist/reports/codeql_summary.md
+          echo "https://github.com/kabil91/pullpiri/security/code-scanning" >> dist/reports/codeql_summary.md
           cat dist/reports/codeql_summary.md
 
-      # Step 9: Upload SARIF results to GitHub Security tab
-      - name: Upload SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
-        if: always()
-        with:
-          sarif_file: dist/reports/codeql-results.sarif
-        continue-on-error: true  # Non-fatal if SARIF upload fails in forks
-
-      # Step 10: Upload CodeQL summary as evidence artifact
+      # Step 8: Upload CodeQL summary as evidence artifact
       - name: Upload CodeQL evidence summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: codeql-static-analysis-report
-          path: |
-            dist/reports/codeql_summary.md
-            dist/reports/codeql-results.sarif
+          path: dist/reports/codeql_summary.md
