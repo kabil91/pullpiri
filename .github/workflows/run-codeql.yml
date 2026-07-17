@@ -38,12 +38,10 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       # Step 4: Initialize CodeQL with Rust language support
-      # The 'rust' extractor is GA and captures Rust source directly.
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: rust
-          queries: security-and-quality
 
       # Step 5: Build the workspace so CodeQL can capture build artifacts
       - name: Build workspace for CodeQL capture
