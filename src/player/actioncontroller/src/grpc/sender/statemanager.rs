@@ -389,6 +389,7 @@ mod tests {
     /// - Complete resource identification and state transition details
     /// - Unique identifiers to prevent test interference
     /// - Comprehensive tracking information for audit trails
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_send_state_change_success() {
         // Add startup delay to ensure StateManager service is ready
@@ -438,6 +439,7 @@ mod tests {
     ///
     /// This test verifies that the report_action_success method correctly
     /// creates and sends StateChange messages for successful action execution.
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_report_action_success() {
         tokio::time::sleep(Duration::from_millis(100)).await;
@@ -466,6 +468,7 @@ mod tests {
     ///
     /// This test verifies that the report_action_failure method correctly
     /// creates and sends StateChange messages for failed action execution.
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_report_action_failure() {
         tokio::time::sleep(Duration::from_millis(100)).await;
@@ -496,6 +499,7 @@ mod tests {
     ///
     /// This test verifies that the report_recovery_success method correctly
     /// creates and sends StateChange messages for successful recovery operations.
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_report_recovery_success() {
         tokio::time::sleep(Duration::from_millis(100)).await;

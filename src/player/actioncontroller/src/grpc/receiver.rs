@@ -314,6 +314,7 @@ mod tests {
         );
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_action_success() {
         let scenario_yaml = r#"
@@ -374,6 +375,7 @@ mod tests {
         assert!(response.message().contains("Failed to reconcile"));
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_scenario_state_management_workflow() {
         // Setup test scenario in ETCD

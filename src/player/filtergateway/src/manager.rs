@@ -202,7 +202,6 @@ impl FilterGatewayManager {
         Ok(())
     }
 
-
     /// Function to process gRPC requests
     ///
     /// This function processes scenario requests coming through gRPC.

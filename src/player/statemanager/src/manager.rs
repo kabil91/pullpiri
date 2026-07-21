@@ -1104,7 +1104,6 @@ impl StateManagerManager {
     }
 }
 
-
 /// Async action executor - runs in separate task
 ///
 /// This function handles the execution of actions triggered by state transitions.

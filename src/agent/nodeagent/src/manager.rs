@@ -289,7 +289,8 @@ pub async fn reconciliation_loop(desired_states_cache: Arc<Mutex<HashMap<String,
         Arc::new(Mutex::new(HashMap::new()));
 
     // Tracks containers that have been permanently failed due to retry cap.
-    let mut permanently_failed: std::collections::HashSet<String> = std::collections::HashSet::new();
+    let mut permanently_failed: std::collections::HashSet<String> =
+        std::collections::HashSet::new();
 
     loop {
         // Clone desired states and release the lock immediately for better concurrency.
@@ -380,7 +381,9 @@ pub async fn reconciliation_loop(desired_states_cache: Arc<Mutex<HashMap<String,
                     );
                     // Podman's restart API restarts the container in-place, preserving the
                     // same container ID. No cache update needed.
-                    let perm_failed = handle_exited_container(desired, exit_code, Arc::clone(&backoff_states)).await;
+                    let perm_failed =
+                        handle_exited_container(desired, exit_code, Arc::clone(&backoff_states))
+                            .await;
                     if perm_failed {
                         permanently_failed.insert(desired.container_id.clone());
                     }
@@ -1119,11 +1122,15 @@ spec:
         // Podman is not running so restart fails, but the safety implementation
         // MUST insert a state with consecutive_failures = 1 to track towards the cap.
         let states = backoff_states.lock().await;
-        assert!(states.contains_key("fresh-container"),
-            "BackoffState must be inserted on first restart failure for safety tracking");
+        assert!(
+            states.contains_key("fresh-container"),
+            "BackoffState must be inserted on first restart failure for safety tracking"
+        );
         let state = states.get("fresh-container").unwrap();
-        assert_eq!(state.consecutive_failures, 1,
-            "consecutive_failures must be 1 after the first restart failure");
+        assert_eq!(
+            state.consecutive_failures, 1,
+            "consecutive_failures must be 1 after the first restart failure"
+        );
     }
 
     /// Verifies that `handle_exited_container` with `RestartPolicy::Never` does not

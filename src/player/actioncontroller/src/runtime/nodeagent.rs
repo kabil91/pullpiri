@@ -75,12 +75,14 @@ mod tests {
 
     // ------------------------- create_workload() -------------------------
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_create_workload_returns_ok() {
         let result = create_workload("test_model", "test_node").await;
         assert!(result.is_ok(), "create_workload() should return Ok");
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_create_workload_invalid_scenario_should_fail() {
         let result = create_workload("", "").await; // Empty scenario = invalid

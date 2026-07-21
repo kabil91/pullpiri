@@ -548,7 +548,10 @@ impl ActionControllerManager {
             };
 
             if desired == Status::Running {
-                if let Err(e) = self.start_workload(&model_name, &model_node, node_type).await {
+                if let Err(e) = self
+                    .start_workload(&model_name, &model_node, node_type)
+                    .await
+                {
                     logd!(5, "start_workload failed for '{}': {:?}", model_name, e);
                     workload_failed = true;
                 }
@@ -581,7 +584,6 @@ impl ActionControllerManager {
 
         Ok(())
     }
-
 
     /// Creates a new workload for the specified scenario
     ///
@@ -806,6 +808,7 @@ mod tests {
         assert!(result.unwrap_err().to_string().contains("not found"));
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_invalid_scenario_yaml() {
         // Setup: Insert invalid YAML for scenario
