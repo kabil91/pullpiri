@@ -940,6 +940,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("launch-test").await;
@@ -990,6 +991,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("terminate-test").await;
@@ -1042,6 +1044,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("update-test").await;
@@ -1091,6 +1094,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("rollback-test").await;
@@ -1141,6 +1145,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("unknown-node-test").await;
@@ -1195,6 +1200,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec!["ZONE".to_string()],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("nodeagent-test").await;
@@ -1265,6 +1271,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec!["ZONE".to_string()],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager
@@ -1293,6 +1300,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec!["ZONE".to_string()],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager
@@ -1325,6 +1333,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
         let result = manager
             .reconcile_do("antipinch-enable".into(), Status::Running, Status::Running)
@@ -1375,6 +1384,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("antipinch-enable").await;
@@ -1400,6 +1410,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager.trigger_manager_action("invalid_scenario").await;
@@ -1411,6 +1422,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager
@@ -1424,6 +1436,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result: std::result::Result<(), Box<dyn Error>> = manager
@@ -1437,6 +1450,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         let result = manager
@@ -1457,6 +1471,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec![],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         assert!(manager.create_workload("test".into()).await.is_ok());
@@ -1469,6 +1484,7 @@ spec:
         let manager = ActionControllerManager {
             nodeagent_nodes: vec!["ZONE".to_string()],
             state_sender: StateManagerSender::new(),
+            retry_counts: Arc::new(std::sync::Mutex::new(HashMap::new())),
         };
 
         assert!(manager.nodeagent_nodes.contains(&"ZONE".to_string()));
