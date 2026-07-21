@@ -183,7 +183,7 @@ fn sha256_bytes(data: &[u8]) -> [u8; 32] {
     }
     let mut out = [0u8; 32];
     for (i, &word) in h.iter().enumerate() {
-        out[i*4..i*4+4].copy_from_slice(&word.to_be_bytes());
+        out[i * 4..i * 4 + 4].copy_from_slice(&word.to_be_bytes());
     }
     out
 }
