@@ -829,6 +829,7 @@ mod tests {
         common::etcd::delete("Scenario/invalid-yaml").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_package_not_found() {
         // Setup: Insert scenario but no corresponding package
@@ -860,6 +861,7 @@ spec:
             .unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_invalid_package_yaml() {
         // Setup: Insert valid scenario and invalid package
@@ -899,6 +901,7 @@ spec:
         common::etcd::delete("Package/invalid-pkg").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_launch_success() {
         // Setup: Insert valid scenario and package
@@ -955,6 +958,7 @@ spec:
         common::etcd::delete("Package/launch-pkg").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_terminate_success() {
         // Setup: Insert valid scenario with terminate action
@@ -1007,6 +1011,7 @@ spec:
         common::etcd::delete("Package/terminate-pkg").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_update_success() {
         // Setup: Insert valid scenario with update action
@@ -1058,6 +1063,7 @@ spec:
         common::etcd::delete("Package/update-pkg").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_rollback_success() {
         // Setup: Insert valid scenario with rollback action
@@ -1110,6 +1116,7 @@ spec:
         common::etcd::delete("Package/rollback-pkg").await.unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_unknown_node() {
         // Setup: Insert scenario with unknown node
@@ -1165,6 +1172,7 @@ spec:
             .unwrap();
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_nodeagent_workload() {
         // Setup: Insert scenario with nodeagent node
@@ -1269,6 +1277,7 @@ spec:
 
     // ==================== start_workload Tests ====================
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_start_workload_nodeagent_node() {
         let manager = ActionControllerManager {
@@ -1298,6 +1307,7 @@ spec:
             .contains("Unsupported node type"));
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_stop_workload_nodeagent_node() {
         let manager = ActionControllerManager {
@@ -1344,6 +1354,7 @@ spec:
         assert!(result.is_ok());
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_trigger_manager_action_with_valid_data() {
         common::etcd::put(

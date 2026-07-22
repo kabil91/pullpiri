@@ -94,12 +94,14 @@ mod tests {
 
     // ------------------------- restart_workload() -------------------------
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_restart_workload_returns_ok() {
         let result = restart_workload("test_model", "test_node").await;
         assert!(result.is_ok(), "restart_workload() should return Ok");
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_restart_workload_nonexistent_should_fail() {
         let result = restart_workload("nonexistent_scenario", "test_node").await;
@@ -111,12 +113,14 @@ mod tests {
 
     // ------------------------- start_workload() -------------------------
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_start_workload_returns_ok() {
         let result = start_workload("test_model", "test_node").await;
         assert!(result.is_ok(), "start_workload() should return Ok");
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_start_workload_nonexistent_should_fail() {
         let result = start_workload("nonexistent_model", "test_node").await;
@@ -128,12 +132,14 @@ mod tests {
 
     // ------------------------- stop_workload() -------------------------
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_stop_workload_returns_ok() {
         let result = stop_workload("test_model", "test_node").await;
         assert!(result.is_ok(), "stop_workload() should return Ok");
     }
 
+    #[ignore = "requires live gRPC server"]
     #[tokio::test]
     async fn test_stop_workload_nonexistent_should_fail() {
         let result = stop_workload("nonexistent_model", "test_node").await;
