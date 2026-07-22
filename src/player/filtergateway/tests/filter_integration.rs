@@ -52,6 +52,7 @@ fn build_dds_data(topic: &str, key: &str, value: &str) -> DdsData {
 // === Expression Tests ===
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_eq_expression_success() {
     let yaml = r#"
 apiVersion: v1
@@ -148,6 +149,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_lt_expression_success() {
     let yaml = r#"
 apiVersion: v1
@@ -275,6 +277,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_le_expression_success() {
     let yaml = r#"
 apiVersion: v1
@@ -323,6 +326,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_ge_expression_success() {
     let yaml = r#"
 apiVersion: v1
@@ -371,6 +375,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_gt_expression_success() {
     let yaml = r#"
 apiVersion: v1
@@ -1111,6 +1116,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_pause_and_resume_filter() {
     let yaml = r#"
 apiVersion: v1
@@ -1170,6 +1176,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires ActionController service to be running"]
 async fn test_trigger_action_when_condition_met() {
     let yaml = r#"
 apiVersion: v1

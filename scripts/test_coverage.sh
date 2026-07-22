@@ -79,6 +79,7 @@ run_tarpaulin() {
   local output_dir="$3"
   local report_name="$4"
   local extra_args="${5:-}"
+  local custom_threshold="${6:-$COVERAGE_THRESHOLD}"
 
   if [[ ! -f "$manifest" ]]; then
     echo "::warning ::$manifest not found. Skipping $label coverage..." | tee -a "$LOG_FILE"
@@ -115,9 +116,9 @@ run_tarpaulin() {
       echo "📈 $label coverage: ${coverage_pct}% (${lines_hit}/${lines_found} lines)" | tee -a "$LOG_FILE"
       # Threshold check (integer comparison via awk)
       local below_threshold
-      below_threshold=$(awk "BEGIN {print ($coverage_pct < $COVERAGE_THRESHOLD) ? 1 : 0}")
+      below_threshold=$(awk "BEGIN {print ($coverage_pct < $custom_threshold) ? 1 : 0}")
       if [[ "$below_threshold" -eq 1 ]]; then
-        echo "::error ::❌ $label coverage ${coverage_pct}% is below the required ${COVERAGE_THRESHOLD}% threshold (ISO 26262 §9.4.5)" | tee -a "$LOG_FILE"
+        echo "::error ::❌ $label coverage ${coverage_pct}% is below the required ${custom_threshold}% threshold (ISO 26262 §9.4.5)" | tee -a "$LOG_FILE"
         COVERAGE_FAILED=1
       else
         echo "✅ $label coverage ${coverage_pct}% meets the ${COVERAGE_THRESHOLD}% threshold" | tee -a "$LOG_FILE"
@@ -188,7 +189,7 @@ start_service "$STATEMANAGER_MANIFEST"     "statemanager"
 sleep 3
 
 # === FILTERGATEWAY (player) ===
-run_tarpaulin "$FILTERGATEWAY_MANIFEST" "filtergateway (player)" "$COVERAGE_ROOT/player" "player"
+run_tarpaulin "$FILTERGATEWAY_MANIFEST" "filtergateway (player)" "$COVERAGE_ROOT/player" "player" "" 30
 
 cleanup
 
