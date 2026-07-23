@@ -1443,6 +1443,7 @@ mod integration_tests {
     }
 
     #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
     async fn test_statemanager_actioncontroller_communication() {
         println!("🧪 Testing StateManager → ActionController Communication");
         println!("=========================================================");
@@ -1549,6 +1550,7 @@ spec:
     }
 
     #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
     async fn test_statemanager_error_handling() {
         println!("🧪 Testing StateManager Error Handling");
         println!("======================================");
@@ -1937,6 +1939,7 @@ mod unit_tests {
     }
 
     #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
     async fn test_save_model_and_package_state_to_etcd_success() {
         let (tx_container, rx_container) = mpsc::channel::<ContainerList>(1);
         let (tx_state_change, rx_state_change) =
@@ -2074,6 +2077,7 @@ mod unit_tests {
     }
 
     #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
     async fn test_manager_process_state_change_scenario_saves_etcd() {
         let (tx_container, rx_container) = mpsc::channel::<ContainerList>(1);
         let (tx_state_change, rx_state_change) =
@@ -2120,6 +2124,7 @@ mod unit_tests {
     }
 
     #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
     async fn test_trigger_package_state_evaluation_updates_and_attempts_reconcile() {
         let (tx_container, rx_container) = mpsc::channel::<ContainerList>(1);
         let (tx_state_change, rx_state_change) =
@@ -2147,6 +2152,7 @@ mod unit_tests {
     }
 
     #[tokio::test]
+    #[ignore = "Requires etcd service to be running"]
     async fn test_find_scenario_for_package_no_scenarios() {
         let (tx_container, rx_container) = mpsc::channel::<ContainerList>(1);
         let (tx_state_change, rx_state_change) =

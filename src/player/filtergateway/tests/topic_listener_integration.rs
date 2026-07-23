@@ -17,6 +17,7 @@ pub struct ADASObstacleDetectionIsWarning {
 }
 
 #[tokio::test]
+#[ignore = "Requires live DDS runtime"]
 async fn test_typed_listener_loop_runs_briefly_and_exits() {
     use tokio::task::JoinHandle;
     use tokio::time::{sleep, Duration};
@@ -42,6 +43,7 @@ async fn test_typed_listener_loop_runs_briefly_and_exits() {
     handle.await; // Cleanup
 }
 #[tokio::test]
+#[ignore = "Requires live DDS runtime"]
 async fn test_topic_listener_lifecycle_and_data_flow() {
     // Setup channel to receive DdsData from listener
     let (tx, mut rx) = mpsc::channel::<DdsData>(10);
@@ -78,6 +80,7 @@ async fn test_topic_listener_lifecycle_and_data_flow() {
 }
 
 #[tokio::test]
+#[ignore = "Requires live DDS runtime"]
 async fn test_listener_detects_closed_channel_and_exits() {
     // Setup channel but drop receiver immediately to simulate closed channel
     let (tx, rx) = mpsc::channel::<DdsData>(10);

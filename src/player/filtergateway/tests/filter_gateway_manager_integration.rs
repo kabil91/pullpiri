@@ -60,6 +60,7 @@ spec:
 "#;
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_initialize_manager_with_valid_scenario() {
     let (_tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -89,6 +90,7 @@ async fn test_initialize_manager_with_valid_scenario() {
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_run_manager_with_allow_action() {
     let (tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -327,6 +329,7 @@ async fn test_run_manager_with_withdraw_action_none() {
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_subscribe_and_unsubscribe_vehicle_data() {
     let (_tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -353,6 +356,7 @@ async fn test_subscribe_and_unsubscribe_vehicle_data() {
     assert!(manager.unsubscribe_vehicle_data(data2).await.is_ok());
 }
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_initialize_manager_with_invalid_scenario_yaml() {
     let (_tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -382,6 +386,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_initialize_manager_with_malformed_yaml() {
     let (_tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -408,6 +413,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_run_manager_with_invalid_action_value() {
     let (tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;
@@ -429,6 +435,7 @@ async fn test_run_manager_with_invalid_action_value() {
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn test_launch_scenario_filter_with_invalid_scenario() {
     let (_tx, rx) = mpsc::channel(10);
     let manager = FilterGatewayManager::new(rx).await;

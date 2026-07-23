@@ -726,6 +726,7 @@ spec:
 
     /// Test for `apply_artifact` - successful case
     #[tokio::test]
+    #[ignore = "Requires live etcd service/gRPC server"]
     async fn test_apply_artifact_success() {
         let addr = start_mock_server().await;
 
@@ -739,6 +740,7 @@ spec:
 
     /// Test for `apply_artifact` - success when passing known/Unknown artifact YAML
     #[tokio::test]
+    #[ignore = "Requires live etcd service/gRPC server"]
     async fn test_apply_artifact_known_unknown_yaml() {
         let addr = start_mock_server().await;
 
@@ -858,6 +860,7 @@ spec:
 
     /// Test for `withdraw_artifact` - successful case
     #[tokio::test]
+    #[ignore = "Requires live etcd service/gRPC server"]
     async fn test_withdraw_artifact_success() {
         let addr = start_mock_server().await;
 

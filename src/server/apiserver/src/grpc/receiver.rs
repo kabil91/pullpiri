@@ -489,6 +489,7 @@ mod tests {
     }
 
     #[tokio::test]
+    #[ignore = "Requires live etcd/gRPC backend"]
     async fn test_update_topology_success() {
         let receiver = ApiServerReceiver::new();
         let test_topology = create_test_cluster_topology();

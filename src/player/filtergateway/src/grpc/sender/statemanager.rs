@@ -352,6 +352,7 @@ mod tests {
     /// - Unique identifiers to prevent test interference
     /// - Comprehensive tracking information for audit trails
     #[tokio::test]
+    #[ignore = "Requires live gRPC statemanager server"]
     async fn test_send_state_change_success() {
         // Add startup delay to ensure StateManager service is ready
         tokio::time::sleep(Duration::from_millis(100)).await;
@@ -406,6 +407,7 @@ mod tests {
     /// This test verifies that the report_policy_decision method correctly
     /// creates and sends StateChange messages for policy enforcement decisions.
     #[tokio::test]
+    #[ignore = "Requires live gRPC statemanager server"]
     async fn test_report_policy_decision() {
         tokio::time::sleep(Duration::from_millis(100)).await;
 
@@ -438,6 +440,7 @@ mod tests {
     /// This test verifies that the report_access_control method correctly
     /// creates and sends StateChange messages for access control decisions.
     #[tokio::test]
+    #[ignore = "Requires live gRPC statemanager server"]
     async fn test_report_access_control() {
         tokio::time::sleep(Duration::from_millis(100)).await;
 
@@ -470,6 +473,7 @@ mod tests {
     /// This test verifies that the report_security_violation method correctly
     /// creates and sends StateChange messages for security violations.
     #[tokio::test]
+    #[ignore = "Requires live gRPC statemanager server"]
     async fn test_report_security_violation() {
         tokio::time::sleep(Duration::from_millis(100)).await;
 
@@ -504,6 +508,7 @@ mod tests {
     /// This test verifies that the report_filter_result method correctly
     /// creates and sends StateChange messages for filtering operations.
     #[tokio::test]
+    #[ignore = "Requires live gRPC statemanager server"]
     async fn test_report_filter_result() {
         tokio::time::sleep(Duration::from_millis(100)).await;
 

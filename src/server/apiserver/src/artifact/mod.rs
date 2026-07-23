@@ -553,6 +553,7 @@ spec:
 
     /// Test apply() with valid artifact YAML (Scenario + Package present)
     #[tokio::test]
+    #[ignore = "Requires live etcd service"]
     async fn test_apply_valid_artifact() {
         // First, create the required Model that the Package references
         let model_value: serde_yaml::Value = serde_yaml::from_str(VALID_MODEL_YAML).unwrap();
@@ -618,6 +619,7 @@ spec:
 
     /// Test withdraw() with valid artifact YAML (Scenario present)
     #[tokio::test]
+    #[ignore = "Requires live etcd service"]
     async fn test_withdraw_valid_artifact() {
         let result = withdraw(VALID_ARTIFACT_YAML).await;
 

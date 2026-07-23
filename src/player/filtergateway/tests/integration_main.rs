@@ -218,6 +218,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn integration_test_initialize_failure_path() {
     // Insert mock Scenario YAML into etcd
     common::etcd::put(
@@ -291,6 +292,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn integration_test_initialize_failure() {
     // Insert mock Scenario YAML into etcd
     common::etcd::put(
@@ -360,6 +362,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn integration_test_initialize_success() {
     // Insert mock Scenario YAML into etcd
     common::etcd::put(
@@ -437,6 +440,7 @@ spec:
 }
 
 #[tokio::test]
+#[ignore = "Requires etcd service to be running"]
 async fn integration_test_initialize_success_path() {
     // Insert mock Scenario YAML into etcd
     common::etcd::put(
