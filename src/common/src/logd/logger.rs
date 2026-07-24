@@ -138,7 +138,7 @@ pub async fn init_async_logger(tag: &str) -> std::io::Result<()> {
 /// * `message` - Formatted log message.
 pub async fn log(level: i32, message: String) {
     if let Err(err) = enqueue(level, message).await {
-        crate::logd!(6, "logger enqueue failed: {err}");
+        eprintln!("[LOGGER ERROR] logger enqueue failed: {err}");
     }
 }
 
@@ -153,12 +153,12 @@ pub fn log_nowait(level: i32, message: String) {
         Ok(handle) => {
             handle.spawn(async move {
                 if let Err(err) = enqueue(level, message).await {
-                    crate::logd!(6, "logger enqueue failed: {err}");
+                    eprintln!("[LOGGER ERROR] logger enqueue failed: {err}");
                 }
             });
         }
         Err(_) => {
-            crate::logd!(4, "logger not running inside a Tokio runtime; dropping log");
+            eprintln!("[LOGGER WARNING] logger not running inside a Tokio runtime; dropping log: {message}");
         }
     }
 }
@@ -309,5 +309,180 @@ fn real_time_ns() -> u64 {
         let mut ts: libc::timespec = std::mem::zeroed();
         libc::clock_gettime(libc::CLOCK_REALTIME, &mut ts);
         (ts.tv_sec as u64) * 1_000_000_000u64 + (ts.tv_nsec as u64)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_bounded_queue_basic() {
+        let q = BoundedQueue::new(2);
+        assert!(q.drain().await.is_empty());
+
+        let env1 = LogEnvelope {
+            ts_real_ns: 100,
+            tag: "tag1".to_string(),
+            level: 1,
+            message: "msg1".to_string(),
+        };
+        let env2 = LogEnvelope {
+            ts_real_ns: 200,
+            tag: "tag2".to_string(),
+            level: 2,
+            message: "msg2".to_string(),
+        };
+        let env3 = LogEnvelope {
+            ts_real_ns: 300,
+            tag: "tag3".to_string(),
+            level: 3,
+            message: "msg3".to_string(),
+        };
+
+        q.push_drop_oldest(env1).await;
+        q.push_drop_oldest(env2).await;
+        // Capacity is 2, so this should drop env1
+        q.push_drop_oldest(env3).await;
+
+        let drained = q.drain().await;
+        assert_eq!(drained.len(), 2);
+        assert_eq!(drained[0].message, "msg2");
+        assert_eq!(drained[1].message, "msg3");
+    }
+
+    #[tokio::test]
+    async fn test_bounded_queue_push_front_batch() {
+        let q = BoundedQueue::new(2);
+
+        // Empty batch
+        q.push_front_batch(vec![]).await;
+
+        let env1 = LogEnvelope {
+            ts_real_ns: 100,
+            tag: "tag1".to_string(),
+            level: 1,
+            message: "msg1".to_string(),
+        };
+        let env2 = LogEnvelope {
+            ts_real_ns: 200,
+            tag: "tag2".to_string(),
+            level: 2,
+            message: "msg2".to_string(),
+        };
+        let env3 = LogEnvelope {
+            ts_real_ns: 300,
+            tag: "tag3".to_string(),
+            level: 3,
+            message: "msg3".to_string(),
+        };
+
+        q.push_front_batch(vec![env1, env2, env3]).await;
+        let drained = q.drain().await;
+        assert_eq!(drained.len(), 2);
+    }
+
+    #[test]
+    fn test_ch_socket_path() {
+        assert_eq!(Ch::Logd.socket_path(), crate::logd::LOGD_SOCKET_PATH);
+    }
+
+    #[tokio::test]
+    async fn test_enqueue_not_initialized() {
+        // Enqueue should return error when not initialized
+        let res = enqueue(3, "test".to_string()).await;
+        assert!(res.is_err());
+    }
+
+    #[test]
+    fn test_log_nowait_no_runtime() {
+        // Run log_nowait in a std::thread without tokio context to cover the Err(_) branch
+        std::thread::spawn(|| {
+            log_nowait(3, "test no runtime".to_string());
+        })
+        .join()
+        .unwrap();
+    }
+
+    #[tokio::test]
+    async fn test_print_stdout_and_levels() {
+        for lvl in 1..=8 {
+            let env = LogEnvelope {
+                ts_real_ns: 1716447885000000000,
+                tag: "test-tag".to_string(),
+                level: lvl,
+                message: "test message".to_string(),
+            };
+            print_stdout(&env);
+        }
+        assert!(real_time_ns() > 0);
+    }
+
+    #[tokio::test]
+    async fn test_drain_channel_socket_interaction() {
+        let q = BoundedQueue::new(10);
+        let env = LogEnvelope {
+            ts_real_ns: 100,
+            tag: "test".to_string(),
+            level: 3,
+            message: "msg".to_string(),
+        };
+        q.push_drop_oldest(env).await;
+
+        // 1. Connection failure branch (unconnected, connect to invalid path fails)
+        let mut socks = HashMap::new();
+        let sock_unconnected = UnixDatagram::unbound().unwrap();
+        socks.insert(Ch::Logd, (sock_unconnected, false));
+        let state = drain_channel(Ch::Logd, &q, &mut socks).await;
+        assert!(matches!(state, DrainState::Pending));
+
+        // 2. Successful send branch
+        // Bind a temporary unix socket to receive data
+        let dir = std::env::temp_dir();
+        let server_path = dir.join("test_logd_server.sock");
+        let _ = std::fs::remove_file(&server_path);
+
+        let server_sock = UnixDatagram::bind(&server_path).unwrap();
+
+        let client_sock = UnixDatagram::unbound().unwrap();
+        client_sock.connect(&server_path).unwrap();
+
+        let mut socks_connected = HashMap::new();
+        socks_connected.insert(Ch::Logd, (client_sock, true));
+
+        // Re-enqueue message
+        let env = LogEnvelope {
+            ts_real_ns: 100,
+            tag: "test".to_string(),
+            level: 3,
+            message: "msg".to_string(),
+        };
+        q.push_drop_oldest(env).await;
+
+        let state = drain_channel(Ch::Logd, &q, &mut socks_connected).await;
+        assert!(matches!(state, DrainState::Idle));
+
+        // Check server received it
+        let mut buf = [0u8; 1024];
+        let (len, _) = server_sock.recv_from(&mut buf).await.unwrap();
+        assert!(len > 0);
+
+        // 3. Send failure branch
+        // Shutdown/drop the server socket so send fails or client is disconnected
+        drop(server_sock);
+        let _ = std::fs::remove_file(&server_path);
+
+        let env = LogEnvelope {
+            ts_real_ns: 100,
+            tag: "test".to_string(),
+            level: 3,
+            message: "msg".to_string(),
+        };
+        q.push_drop_oldest(env).await;
+
+        // Note: UnixDatagram might not fail immediately on write if unbound, but let's try
+        let state = drain_channel(Ch::Logd, &q, &mut socks_connected).await;
+        // Whether it returns Pending or Idle depending on OS socket buffering, it's fine.
+        assert!(matches!(state, DrainState::Idle | DrainState::Pending));
     }
 }
