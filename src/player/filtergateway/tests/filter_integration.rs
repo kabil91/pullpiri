@@ -101,7 +101,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_meet_scenario_condition_data_not_match() {
     let yaml = r#"
 apiVersion: v1
@@ -199,7 +198,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_meet_scenario_condition_field_parse_error() {
     let yaml = r#"
 apiVersion: v1
@@ -428,7 +426,6 @@ spec:
 // === Error Cases ===
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_wrong_expression_returns_error() {
     let yaml = r#"
 apiVersion: v1
@@ -480,7 +477,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_topic_mismatch_returns_ok() {
     let yaml = r#"
 apiVersion: v1
@@ -535,7 +531,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_gt_condition_not_met() {
     let yaml = r#"
 apiVersion: v1
@@ -583,7 +578,6 @@ spec:
     common::etcd::delete("Package/test_gt").await.unwrap();
 }
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_missing_field_returns_error_logged() {
     let yaml = r#"
 apiVersion: v1
@@ -639,7 +633,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_lt_expression() {
     let yaml = r#"
 apiVersion: v1
@@ -694,7 +687,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_le_expression() {
     let yaml = r#"
 apiVersion: v1
@@ -749,7 +741,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_gt_expression() {
     let yaml = r#"
 apiVersion: v1
@@ -804,7 +795,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_ge_expression() {
     let yaml = r#"
 apiVersion: v1
@@ -859,7 +849,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_gt_field_value() {
     let yaml = r#"
 apiVersion: v1
@@ -914,7 +903,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_lt_field_value() {
     let yaml = r#"
 apiVersion: v1
@@ -969,7 +957,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_le_field_value() {
     let yaml = r#"
 apiVersion: v1
@@ -1024,7 +1011,6 @@ spec:
 }
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_parse_error_in_ge_field_value() {
     let yaml = r#"
 apiVersion: v1
@@ -1081,7 +1067,6 @@ spec:
 // === Behavior Tests ===
 
 #[tokio::test]
-#[ignore = "Requires ActionController service to be running"]
 async fn test_filter_inactive_skips_processing() {
     let yaml = r#"
 apiVersion: v1

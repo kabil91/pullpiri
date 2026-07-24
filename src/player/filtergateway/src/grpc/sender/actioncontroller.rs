@@ -47,7 +47,10 @@ impl FilterGatewaySender {
         use common::actioncontroller::TriggerActionRequest;
         let mut client = ActionControllerConnectionClient::connect(connect_server())
             .await
-            .unwrap();
+            .map_err(|e| {
+                common::logd!(5, "Failed to connect to ActionController: {:?}", e);
+                anyhow::anyhow!("Failed to connect to ActionController: {:?}", e)
+            })?;
 
         let request = TriggerActionRequest { scenario_name };
 

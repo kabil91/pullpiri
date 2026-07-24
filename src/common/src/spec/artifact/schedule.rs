@@ -40,3 +40,30 @@ pub enum SchedPolicy {
     // SCHED_RR
     RR = 2,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_schedule_spec_properties() {
+        let spec = ScheduleSpec {
+            name: "sched1".to_string(),
+            priority: 10,
+            policy: SchedPolicy::FIFO,
+            cpu_affinity: 3,
+            period: 1000,
+            release_time: 0,
+            runtime: 500,
+            deadline: 1000,
+            node_id: "HPC".to_string(),
+            max_dmiss: 1,
+        };
+
+        assert_eq!(spec.name, "sched1");
+        assert_eq!(spec.priority, 10);
+        assert_eq!(spec.policy, SchedPolicy::FIFO);
+        assert_eq!(spec.cpu_affinity, 3);
+        assert_eq!(spec.max_dmiss, 1);
+    }
+}

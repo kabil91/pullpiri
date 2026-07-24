@@ -13,11 +13,10 @@
 # The pipeline fails if any crate drops below this threshold.
 set -euo pipefail
 
-# === Initialize paths and variables ===
-LOG_FILE="dist/coverage/test_coverage_log.txt"
-COVERAGE_ROOT="dist/coverage"
 # Detect project root (for CI or local)
 PROJECT_ROOT=${GITHUB_WORKSPACE:-$(pwd)}
+LOG_FILE="$PROJECT_ROOT/dist/coverage/test_coverage_log.txt"
+COVERAGE_ROOT="$PROJECT_ROOT/dist/coverage"
 cd "$PROJECT_ROOT"
 mkdir -p "$COVERAGE_ROOT"
 rm -f "$LOG_FILE"
@@ -80,6 +79,8 @@ run_tarpaulin() {
   local report_name="$4"
   local extra_args="${5:-}"
   local custom_threshold="${6:-$COVERAGE_THRESHOLD}"
+  local packages_arg="${7:-}"
+  local include_arg="${8:-}"
 
   if [[ ! -f "$manifest" ]]; then
     echo "::warning ::$manifest not found. Skipping $label coverage..." | tee -a "$LOG_FILE"
@@ -91,12 +92,15 @@ run_tarpaulin() {
 
   local tarpaulin_exit=0
   (
-    cd "$(dirname "$manifest")"
+    cd "$PROJECT_ROOT/src"
     # shellcheck disable=SC2086
     cargo tarpaulin \
       --out Html --out Lcov --out Xml \
       --output-dir "$PROJECT_ROOT/$output_dir" \
       --ignore-panics --no-fail-fast \
+      --run-types Tests \
+      $packages_arg \
+      $include_arg \
       $extra_args \
       2>&1 | tee -a "$LOG_FILE"
   ) || tarpaulin_exit=$?
@@ -133,24 +137,17 @@ run_tarpaulin() {
 # Phase 1: Standalone crates (no runtime dependencies required)
 # ==========================================================================
 
-# === COMMON ===
-run_tarpaulin "$COMMON_MANIFEST" "common" "$COVERAGE_ROOT/common" "common"
-
 # === TOOLS ===
-run_tarpaulin "$TOOLS_MANIFEST" "tools" "$COVERAGE_ROOT/tools" "tools"
+run_tarpaulin "$TOOLS_MANIFEST" "tools" "$COVERAGE_ROOT/tools" "tools" "" 70 "--packages pirictl idl2rs rocksdb-inspector" "--include-files *tools/*"
 
 # === NODEAGENT (Action 1: re-enabled — tests fixed, Podman tests marked #[ignore]) ===
 # ISO 26262 §9.4.5: NodeAgent contains comp_req__na__local_reconcile and comp_req__na__backoff
 run_tarpaulin "$NODEAGENT_MANIFEST" "nodeagent (agent)" "$COVERAGE_ROOT/agent" "agent" \
-  "--ignore-tests"
+  "--ignore-tests" 70 "--packages nodeagent" "--include-files *agent/nodeagent/src/*"
 
 # === STATEMANAGER (Action 2: added — contains comp_req__sm__heartbeat, comp_req__sm__validate_state) ===
 # ISO 26262 §9.4.5: StateManager is safety-critical ASIL-B
-run_tarpaulin "$STATEMANAGER_MANIFEST" "statemanager (player)" "$COVERAGE_ROOT/statemanager" "statemanager"
-
-# === ACTIONCONTROLLER (Action 2: added — contains comp_req__ac__retry_limit, comp_req__ac__reconcile_do) ===
-# ISO 26262 §9.4.5: ActionController is safety-critical ASIL-B
-run_tarpaulin "$ACTIONCONTROLLER_MANIFEST" "actioncontroller (player)" "$COVERAGE_ROOT/actioncontroller" "actioncontroller"
+run_tarpaulin "$STATEMANAGER_MANIFEST" "statemanager (player)" "$COVERAGE_ROOT/statemanager" "statemanager" "" 70 "--packages statemanager" "--include-files *player/statemanager/src/*"
 
 # ==========================================================================
 # Phase 2: Service crates (require supporting services running)
@@ -167,20 +164,69 @@ sleep 3
 
 # === SERVER (apiserver) ===
 run_tarpaulin "$APISERVER_MANIFEST" "apiserver (server)" "$COVERAGE_ROOT/server" "server" \
-  "--skip-clean"
+  "--skip-clean" 70 "--packages apiserver" "--include-files *server/apiserver/src/*"
+
+# === COMMON ===
+# Run workspace-wide tests with active background services to measure shared module coverage
+# Uses multiple --include-files to cover all subdirectories (logd/, spec/, spec/k8s/, spec/artifact/)
+echo "📂 Running tarpaulin for common" | tee -a "$LOG_FILE"
+mkdir -p "$COVERAGE_ROOT/common"
+(
+  cd "$PROJECT_ROOT/src"
+  cargo tarpaulin \
+    --out Html --out Lcov --out Xml \
+    --output-dir "$PROJECT_ROOT/$COVERAGE_ROOT/common" \
+    --ignore-panics --no-fail-fast \
+    --run-types Tests \
+    --workspace \
+    --include-files 'common/src/*.rs' \
+    --include-files 'common/src/logd/*.rs' \
+    --include-files 'common/src/spec/*.rs' \
+    --include-files 'common/src/spec/k8s/*.rs' \
+    --include-files 'common/src/spec/artifact/*.rs' \
+    --exclude-files '*generated*' \
+    2>&1 | tee -a "$LOG_FILE"
+) || true
+mv "$PROJECT_ROOT/$COVERAGE_ROOT/common/tarpaulin-report.html" \
+   "$PROJECT_ROOT/$COVERAGE_ROOT/common/tarpaulin-report-common.html" 2>/dev/null || true
+# Parse coverage from lcov
+_lcov="$PROJECT_ROOT/$COVERAGE_ROOT/common/lcov.info"
+if [[ -f "$_lcov" ]]; then
+  _lf=$(grep "^LF:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  _lh=$(grep "^LH:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  if [[ "${_lf:-0}" -gt 0 ]]; then
+    _pct=$(awk "BEGIN {printf \"%.1f\", ($_lh / $_lf) * 100}")
+    echo "📈 common coverage: ${_pct}% (${_lh}/${_lf} lines)" | tee -a "$LOG_FILE"
+    if awk "BEGIN {exit ($_pct < 70) ? 0 : 1}"; then
+      echo "::error ::❌ common coverage ${_pct}% is below the required 70% threshold (ISO 26262 §9.4.5)" | tee -a "$LOG_FILE"
+      COVERAGE_FAILED=1
+    else
+      echo "✅ common coverage ${_pct}% meets the 70% threshold" | tee -a "$LOG_FILE"
+    fi
+  fi
+fi
 
 # === Stop services before player round ===
 cleanup
 
-# === Start IDL2DDS Docker Service for FilterGateway DDS tests ===
-if ! docker ps | grep -qi "idl2dds"; then
-  echo "📦 Launching IDL2DDS docker services..." | tee -a "$LOG_FILE"
-  [[ ! -d IDL2DDS ]] && git clone https://github.com/MCO-PICCOLO/IDL2DDS -b master
-  pushd IDL2DDS
-  docker compose up --build -d
-  popd
+if command -v docker &>/dev/null && docker ps &>/dev/null; then
+  if ! docker ps | grep -qi "idl2dds"; then
+    echo "📦 Launching IDL2DDS docker services..." | tee -a "$LOG_FILE"
+    [[ ! -d IDL2DDS ]] && git clone https://github.com/MCO-PICCOLO/IDL2DDS -b master
+    pushd IDL2DDS
+    if docker compose version &>/dev/null; then
+      docker compose up --build -d || echo "⚠️ docker compose up failed"
+    elif command -v docker-compose &>/dev/null; then
+      docker-compose up --build -d || echo "⚠️ docker-compose up failed"
+    else
+      echo "⚠️ No docker compose or docker-compose command found"
+    fi
+    popd
+  else
+    echo "🟢 IDL2DDS already running." | tee -a "$LOG_FILE"
+  fi
 else
-  echo "🟢 IDL2DDS already running." | tee -a "$LOG_FILE"
+  echo "⚠️ Docker daemon not accessible or running. Skipping IDL2DDS service startup." | tee -a "$LOG_FILE"
 fi
 
 # === Player services ===
@@ -189,7 +235,44 @@ start_service "$STATEMANAGER_MANIFEST"     "statemanager"
 sleep 3
 
 # === FILTERGATEWAY (player) ===
-run_tarpaulin "$FILTERGATEWAY_MANIFEST" "filtergateway (player)" "$COVERAGE_ROOT/player" "player" "" 30
+run_tarpaulin "$FILTERGATEWAY_MANIFEST" "filtergateway (player)" "$COVERAGE_ROOT/player" "player" "" 30 "--packages filtergateway" "--include-files *player/filtergateway/src/*"
+
+# === ACTIONCONTROLLER ===
+# Run actioncontroller package tests — covers grpc/, runtime/, manager, and main
+echo "📂 Running tarpaulin for actioncontroller (player)" | tee -a "$LOG_FILE"
+mkdir -p "$COVERAGE_ROOT/actioncontroller"
+(
+  cd "$PROJECT_ROOT/src"
+  cargo tarpaulin \
+    --out Html --out Lcov --out Xml \
+    --output-dir "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller" \
+    --ignore-panics --no-fail-fast \
+    --run-types Tests \
+    --packages actioncontroller \
+    --include-files 'player/actioncontroller/src/*.rs' \
+    --include-files 'player/actioncontroller/src/grpc/*.rs' \
+    --include-files 'player/actioncontroller/src/grpc/sender/*.rs' \
+    --include-files 'player/actioncontroller/src/runtime/*.rs' \
+    2>&1 | tee -a "$LOG_FILE"
+) || true
+mv "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/tarpaulin-report.html" \
+   "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/tarpaulin-report-actioncontroller.html" 2>/dev/null || true
+# Parse coverage from lcov
+_lcov="$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/lcov.info"
+if [[ -f "$_lcov" ]]; then
+  _lf=$(grep "^LF:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  _lh=$(grep "^LH:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  if [[ "${_lf:-0}" -gt 0 ]]; then
+    _pct=$(awk "BEGIN {printf \"%.1f\", ($_lh / $_lf) * 100}")
+    echo "📈 actioncontroller (player) coverage: ${_pct}% (${_lh}/${_lf} lines)" | tee -a "$LOG_FILE"
+    if awk "BEGIN {exit ($_pct < 70) ? 0 : 1}"; then
+      echo "::error ::❌ actioncontroller (player) coverage ${_pct}% is below the required 70% threshold (ISO 26262 §9.4.5)" | tee -a "$LOG_FILE"
+      COVERAGE_FAILED=1
+    else
+      echo "✅ actioncontroller (player) coverage ${_pct}% meets the 70% threshold" | tee -a "$LOG_FILE"
+    fi
+  fi
+fi
 
 cleanup
 

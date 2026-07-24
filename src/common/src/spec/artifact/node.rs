@@ -78,3 +78,42 @@ impl NodeSpec {
         &self.config
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_node_spec_getters() {
+        let mut config = std::collections::HashMap::new();
+        config.insert("key1".to_string(), "val1".to_string());
+
+        let resources = NodeResources {
+            cpu_cores: Some(4),
+            memory_mb: Some(8192),
+            disk_gb: Some(100),
+            architecture: Some("x86_64".to_string()),
+            os_version: Some("Linux".to_string()),
+        };
+
+        let spec = NodeSpec {
+            role: Some("master".to_string()),
+            ip_address: Some("127.0.0.1".to_string()),
+            hostname: Some("node1".to_string()),
+            resources: Some(resources.clone()),
+            cluster_id: Some("cluster-1".to_string()),
+            status: Some("ready".to_string()),
+            last_heartbeat: Some(123456789),
+            config: Some(config.clone()),
+        };
+
+        assert_eq!(spec.get_role(), &Some("master".to_string()));
+        assert_eq!(spec.get_ip_address(), &Some("127.0.0.1".to_string()));
+        assert_eq!(spec.get_hostname(), &Some("node1".to_string()));
+        assert_eq!(spec.get_resources(), &Some(resources));
+        assert_eq!(spec.get_cluster_id(), &Some("cluster-1".to_string()));
+        assert_eq!(spec.get_status(), &Some("ready".to_string()));
+        assert_eq!(spec.get_last_heartbeat(), &Some(123456789));
+        assert_eq!(spec.get_config(), &Some(config));
+    }
+}

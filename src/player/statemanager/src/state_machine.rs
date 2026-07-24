@@ -1958,7 +1958,6 @@ mod tests {
     }
 
     #[tokio::test]
-#[ignore = "Requires etcd service to be running"]
     async fn test_get_current_package_state_reads_etcd() {
         // Put a package state into etcd and verify mapping
         let key = "/package/testpkg/state";
@@ -1969,7 +1968,6 @@ mod tests {
     }
 
     #[tokio::test]
-#[ignore = "Requires etcd service to be running"]
     async fn test_evaluate_and_update_package_state_all_dead_in_etcd() {
         // Create a package with two models and set both models' states to Dead in ETCD
         let pkg_key = "Package/pkg-dead";
@@ -1994,7 +1992,6 @@ mod tests {
     }
 
     #[tokio::test]
-#[ignore = "Requires etcd service to be running"]
     async fn test_evaluate_and_update_package_state_degraded_in_etcd() {
         // Create a package with two models and set one model Dead and one Running
         let pkg_key = "Package/pkg-degraded";
@@ -2051,7 +2048,6 @@ mod tests {
     }
 
     #[tokio::test]
-#[ignore = "Requires etcd service to be running"]
     async fn test_find_packages_containing_model_success() {
         // Create two packages, one containing the target model
         let pkg_a_key = "Package/pkg-with-model";

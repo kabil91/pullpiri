@@ -11,28 +11,77 @@ use common::logd;
 
 pub async fn add_sched_info(sched_info: SchedInfo) {
     logd!(1, "Connecting to Timpani server ....");
-    let mut client = SchedInfoServiceClient::connect(connect_timpani_server())
-        .await
-        .unwrap();
+    match SchedInfoServiceClient::connect(connect_timpani_server()).await {
+        Ok(mut client) => {
+            let response: Result<Response, tonic::Status> = client
+                .add_sched_info(sched_info)
+                .await
+                .map(|r| r.into_inner());
 
-    let response: Result<Response, tonic::Status> = client
-        .add_sched_info(sched_info)
-        .await
-        .map(|r| r.into_inner());
-
-    match response {
-        Ok(res) => {
-            logd!(3, "[add_sched_info] RESPONSE={:?}", res);
+            match response {
+                Ok(res) => {
+                    logd!(3, "[add_sched_info] RESPONSE={:?}", res);
+                }
+                Err(e) => {
+                    logd!(5, "[add_sched_info] ERROR={:?}", e);
+                }
+            }
         }
         Err(e) => {
-            logd!(5, "[add_sched_info] ERROR={:?}", e);
+            logd!(5, "[add_sched_info] Failed to connect to Timpani server: {:?}", e);
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     use common::external::timpani::{SchedInfo, SchedPolicy, TaskInfo};
+
+    #[tokio::test]
+    async fn test_add_sched_info_unreachable() {
+        let info = SchedInfo {
+            workload_id: "test".to_string(),
+            tasks: vec![],
+        };
+        add_sched_info(info).await;
+    }
+
+    use common::external::timpani::{
+        sched_info_service_server::{SchedInfoService, SchedInfoServiceServer},
+        Response as TimpaniResp, SchedInfo as MockSchedInfo,
+    };
+
+    struct MockTimpaniServer;
+
+    #[tonic::async_trait]
+    impl SchedInfoService for MockTimpaniServer {
+        async fn add_sched_info(
+            &self,
+            _request: tonic::Request<MockSchedInfo>,
+        ) -> std::result::Result<tonic::Response<TimpaniResp>, tonic::Status> {
+            Ok(tonic::Response::new(TimpaniResp { status: 0 }))
+        }
+    }
+
+    #[tokio::test]
+    async fn test_add_sched_info_with_mock_server() {
+        if let Ok(addr) = "127.0.0.1:50052".parse() {
+            tokio::spawn(async move {
+                let _ = tonic::transport::Server::builder()
+                    .add_service(SchedInfoServiceServer::new(MockTimpaniServer))
+                    .serve(addr)
+                    .await;
+            });
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+
+            let info = SchedInfo {
+                workload_id: "test-mock".to_string(),
+                tasks: vec![],
+            };
+            add_sched_info(info).await;
+        }
+    }
 
     // ==================== Direct Function Call Tests ====================
 

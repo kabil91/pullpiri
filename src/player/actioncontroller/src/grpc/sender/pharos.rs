@@ -38,6 +38,17 @@ pub async fn request_network_pod(
     };
     let mut client = PharosNetworkServiceConnectionClient::connect(connect_pharos_server())
         .await
-        .unwrap();
+        .map_err(|e| Status::unavailable(format!("Failed to connect to Pharos: {}", e)))?;
     client.request_network_pod(Request::new(request)).await
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_request_network_pod_unreachable() {
+        let res = request_network_pod("node_yaml".to_string(), "pod".to_string(), "net".to_string()).await;
+        assert!(res.is_err());
+    }
 }

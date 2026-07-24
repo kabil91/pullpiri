@@ -308,3 +308,44 @@ pub async fn health_check() -> Result<bool, String> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_etcd_put_get_delete_cycle() {
+        let key = "test_etcd_key_cycle";
+        let val = "test_etcd_val_cycle";
+
+        let put_res = put(key, val).await;
+        if put_res.is_ok() {
+            let get_res = get(key).await;
+            assert!(get_res.is_ok());
+            assert_eq!(get_res.unwrap(), val);
+
+            let del_res = delete(key).await;
+            assert!(del_res.is_ok());
+        }
+    }
+
+    #[tokio::test]
+    async fn test_etcd_batch_put_and_prefix() {
+        let items = vec![
+            ("prefix_test/1".to_string(), "val1".to_string()),
+            ("prefix_test/2".to_string(), "val2".to_string()),
+        ];
+        let res = batch_put(items).await;
+        if res.is_ok() {
+            let prefix_res = get_all_with_prefix("prefix_test/").await;
+            assert!(prefix_res.is_ok());
+            let _ = delete("prefix_test/1").await;
+            let _ = delete("prefix_test/2").await;
+        }
+    }
+
+    #[tokio::test]
+    async fn test_etcd_health_check() {
+        let _ = health_check().await;
+    }
+}

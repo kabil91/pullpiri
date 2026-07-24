@@ -801,7 +801,7 @@ mod tests {
         drop(rx);
     }
     #[tokio::test]
-    #[ignore = "Requires live DDS runtime - typed_listener_loop blocks waiting for DDS participant"]
+    #[ignore = "Requires live DDS runtime"]
     async fn test_typed_listener_loop_exit_triggers_send_err() {
         use tokio::sync::mpsc::channel;
         use tokio::time::{sleep, Duration};
@@ -835,7 +835,7 @@ mod tests {
         let _ = listener.await;
     }
     #[tokio::test]
-    #[ignore = "Requires live DDS runtime - typed_listener_loop blocks waiting for DDS participant"]
+    #[ignore = "Requires live DDS runtime"]
     async fn test_typed_listener_loop_direct_and_exit_cleanly() {
         use tokio::time::sleep;
         use tokio::{sync::mpsc, time::Duration};

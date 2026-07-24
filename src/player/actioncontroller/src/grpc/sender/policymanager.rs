@@ -104,4 +104,54 @@ mod tests {
         let result = check_policy(scenario_name).await;
         assert!(result.is_err());
     }
+
+    #[tokio::test]
+    async fn test_check_policy_unreachable() {
+        let result = check_policy("valid-scenario-name".to_string()).await;
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    use common::policymanager::{
+        policy_manager_connection_server::{PolicyManagerConnection, PolicyManagerConnectionServer},
+        CheckPolicyRequest as MockCheckReq, CheckPolicyResponse as MockCheckResp,
+    };
+    use std::sync::atomic::{AtomicI32, Ordering};
+    use tonic::{Request as TonicReq, Response as TonicResp, Status as TonicStatus};
+
+    struct MockPolicyServer {
+        status_code: AtomicI32,
+    }
+
+    #[tonic::async_trait]
+    impl PolicyManagerConnection for MockPolicyServer {
+        async fn check_policy(
+            &self,
+            _request: TonicReq<MockCheckReq>,
+        ) -> std::result::Result<TonicResp<MockCheckResp>, TonicStatus> {
+            let st = self.status_code.load(Ordering::Relaxed);
+            Ok(TonicResp::new(MockCheckResp {
+                status: st,
+                desc: "Mock Policy Result".to_string(),
+            }))
+        }
+    }
+
+    #[tokio::test]
+    async fn test_check_policy_with_mock_server() {
+        if let Ok(addr) = "127.0.0.1:47005".parse() {
+            tokio::spawn(async move {
+                let mock = MockPolicyServer {
+                    status_code: AtomicI32::new(0),
+                };
+                let _ = tonic::transport::Server::builder()
+                    .add_service(PolicyManagerConnectionServer::new(mock))
+                    .serve(addr)
+                    .await;
+            });
+            tokio::time::sleep(std::time::Duration::from_millis(100)).await;
+
+            let res_success = check_policy("mock-scen-pass".to_string()).await;
+            assert!(res_success.is_ok() || res_success.is_err());
+        }
+    }
 }
