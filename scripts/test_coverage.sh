@@ -96,7 +96,7 @@ run_tarpaulin() {
     # shellcheck disable=SC2086
     cargo tarpaulin \
       --out Html --out Lcov --out Xml \
-      --output-dir "$PROJECT_ROOT/$output_dir" \
+      --output-dir "$output_dir" \
       --ignore-panics --no-fail-fast \
       --run-types Tests \
       $packages_arg \
@@ -106,11 +106,11 @@ run_tarpaulin() {
   ) || tarpaulin_exit=$?
 
   # Rename default HTML report to crate-specific name
-  mv "$PROJECT_ROOT/$output_dir/tarpaulin-report.html" \
-     "$PROJECT_ROOT/$output_dir/tarpaulin-report-${report_name}.html" 2>/dev/null || true
+  mv "$output_dir/tarpaulin-report.html" \
+     "$output_dir/tarpaulin-report-${report_name}.html" 2>/dev/null || true
 
   # Extract coverage percentage from lcov.info (count lines covered vs total)
-  local lcov_file="$PROJECT_ROOT/$output_dir/lcov.info"
+  local lcov_file="$output_dir/lcov.info"
   if [[ -f "$lcov_file" ]]; then
     local lines_found lines_hit coverage_pct
     lines_found=$(grep "^LF:" "$lcov_file" | awk -F: '{sum+=$2} END{print sum}')
@@ -175,7 +175,7 @@ mkdir -p "$COVERAGE_ROOT/common"
   cd "$PROJECT_ROOT/src"
   cargo tarpaulin \
     --out Html --out Lcov --out Xml \
-    --output-dir "$PROJECT_ROOT/$COVERAGE_ROOT/common" \
+    --output-dir "$COVERAGE_ROOT/common" \
     --ignore-panics --no-fail-fast \
     --run-types Tests \
     --workspace \
@@ -187,10 +187,10 @@ mkdir -p "$COVERAGE_ROOT/common"
     --exclude-files '*generated*' \
     2>&1 | tee -a "$LOG_FILE"
 ) || true
-mv "$PROJECT_ROOT/$COVERAGE_ROOT/common/tarpaulin-report.html" \
-   "$PROJECT_ROOT/$COVERAGE_ROOT/common/tarpaulin-report-common.html" 2>/dev/null || true
+mv "$COVERAGE_ROOT/common/tarpaulin-report.html" \
+   "$COVERAGE_ROOT/common/tarpaulin-report-common.html" 2>/dev/null || true
 # Parse coverage from lcov
-_lcov="$PROJECT_ROOT/$COVERAGE_ROOT/common/lcov.info"
+_lcov="$COVERAGE_ROOT/common/lcov.info"
 if [[ -f "$_lcov" ]]; then
   _lf=$(grep "^LF:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
   _lh=$(grep "^LH:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
@@ -245,7 +245,7 @@ mkdir -p "$COVERAGE_ROOT/actioncontroller"
   cd "$PROJECT_ROOT/src"
   cargo tarpaulin \
     --out Html --out Lcov --out Xml \
-    --output-dir "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller" \
+    --output-dir "$COVERAGE_ROOT/actioncontroller" \
     --ignore-panics --no-fail-fast \
     --run-types Tests \
     --packages actioncontroller \
@@ -255,10 +255,10 @@ mkdir -p "$COVERAGE_ROOT/actioncontroller"
     --include-files 'player/actioncontroller/src/runtime/*.rs' \
     2>&1 | tee -a "$LOG_FILE"
 ) || true
-mv "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/tarpaulin-report.html" \
-   "$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/tarpaulin-report-actioncontroller.html" 2>/dev/null || true
+mv "$COVERAGE_ROOT/actioncontroller/tarpaulin-report.html" \
+   "$COVERAGE_ROOT/actioncontroller/tarpaulin-report-actioncontroller.html" 2>/dev/null || true
 # Parse coverage from lcov
-_lcov="$PROJECT_ROOT/$COVERAGE_ROOT/actioncontroller/lcov.info"
+_lcov="$COVERAGE_ROOT/actioncontroller/lcov.info"
 if [[ -f "$_lcov" ]]; then
   _lf=$(grep "^LF:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
   _lh=$(grep "^LH:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
