@@ -28,7 +28,11 @@ pub async fn add_sched_info(sched_info: SchedInfo) {
             }
         }
         Err(e) => {
-            logd!(5, "[add_sched_info] Failed to connect to Timpani server: {:?}", e);
+            logd!(
+                5,
+                "[add_sched_info] Failed to connect to Timpani server: {:?}",
+                e
+            );
         }
     }
 }

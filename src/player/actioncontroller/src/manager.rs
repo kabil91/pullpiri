@@ -890,7 +890,9 @@ spec:
         assert!(result.is_err());
         let err_msg = result.unwrap_err().to_string();
         assert!(
-            err_msg.contains("Failed to parse package") || err_msg.contains("not found") || !err_msg.is_empty(),
+            err_msg.contains("Failed to parse package")
+                || err_msg.contains("not found")
+                || !err_msg.is_empty(),
             "Expected a package error, got: '{}'",
             err_msg
         );
@@ -1287,7 +1289,10 @@ spec:
             .await;
 
         // start_workload calls nodeagent gRPC which may not be running in test env
-        assert!(result.is_ok() || result.is_err(), "start_workload should complete without panicking");
+        assert!(
+            result.is_ok() || result.is_err(),
+            "start_workload should complete without panicking"
+        );
     }
 
     #[tokio::test]
@@ -1317,7 +1322,10 @@ spec:
             .await;
 
         // stop_workload calls nodeagent gRPC which may not be running in test env
-        assert!(result.is_ok() || result.is_err(), "stop_workload should complete without panicking");
+        assert!(
+            result.is_ok() || result.is_err(),
+            "stop_workload should complete without panicking"
+        );
     }
 
     #[tokio::test]
@@ -1516,7 +1524,10 @@ spec:
             .execute_workload_operation("start", "pod1", "node1", "unsupported_type")
             .await;
         assert!(res.is_err());
-        assert!(res.unwrap_err().to_string().contains("Unsupported node type"));
+        assert!(res
+            .unwrap_err()
+            .to_string()
+            .contains("Unsupported node type"));
 
         // test start, stop, restart with nodeagent
         let res_start = manager
@@ -1546,7 +1557,10 @@ spec:
             .reconcile_do("test-scenario".to_string(), Status::Ready, Status::Running)
             .await;
         assert!(res.is_err());
-        assert!(res.unwrap_err().to_string().contains("exceeded max reconcile retries"));
+        assert!(res
+            .unwrap_err()
+            .to_string()
+            .contains("exceeded max reconcile retries"));
     }
 
     #[tokio::test]
@@ -1601,7 +1615,14 @@ resources:
         assert!(res_upd.is_err());
 
         let res_unknown = manager
-            .execute_model_action("unknown_action", &model_info, "nodeagent", "scen", &None, &None)
+            .execute_model_action(
+                "unknown_action",
+                &model_info,
+                "nodeagent",
+                "scen",
+                &None,
+                &None,
+            )
             .await;
         assert!(res_unknown.is_err());
     }

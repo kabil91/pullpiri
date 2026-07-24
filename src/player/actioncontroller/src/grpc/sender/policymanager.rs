@@ -112,7 +112,9 @@ mod tests {
     }
 
     use common::policymanager::{
-        policy_manager_connection_server::{PolicyManagerConnection, PolicyManagerConnectionServer},
+        policy_manager_connection_server::{
+            PolicyManagerConnection, PolicyManagerConnectionServer,
+        },
         CheckPolicyRequest as MockCheckReq, CheckPolicyResponse as MockCheckResp,
     };
     use std::sync::atomic::{AtomicI32, Ordering};

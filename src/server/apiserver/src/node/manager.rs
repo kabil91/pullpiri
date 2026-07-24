@@ -363,7 +363,12 @@ mod tests {
                 // In concurrent test env, etcd nodes count may change slightly between calls
                 assert!(!nodes1.is_empty() || nodes1.is_empty());
                 assert!(!nodes2.is_empty() || nodes2.is_empty());
-                logd!(2, "Both methods returned {} and {} nodes", nodes1.len(), nodes2.len());
+                logd!(
+                    2,
+                    "Both methods returned {} and {} nodes",
+                    nodes1.len(),
+                    nodes2.len()
+                );
             }
             (Err(e1), Err(e2)) => {
                 // Both should fail with same error if etcd unavailable

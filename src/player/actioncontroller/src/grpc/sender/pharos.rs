@@ -48,7 +48,12 @@ mod tests {
 
     #[tokio::test]
     async fn test_request_network_pod_unreachable() {
-        let res = request_network_pod("node_yaml".to_string(), "pod".to_string(), "net".to_string()).await;
+        let res = request_network_pod(
+            "node_yaml".to_string(),
+            "pod".to_string(),
+            "net".to_string(),
+        )
+        .await;
         assert!(res.is_err());
     }
 }
