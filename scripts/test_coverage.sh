@@ -97,6 +97,7 @@ run_tarpaulin() {
     cd "$manifest_dir"
     # shellcheck disable=SC2086
     cargo tarpaulin \
+      --skip-clean \
       --out Html --out Lcov --out Xml \
       --output-dir "$output_dir" \
       --ignore-panics --no-fail-fast \
@@ -188,6 +189,7 @@ mkdir -p "$COVERAGE_ROOT/common"
 (
   cd "$PROJECT_ROOT/src"
   cargo tarpaulin \
+    --skip-clean \
     --out Html --out Lcov --out Xml \
     --output-dir "$COVERAGE_ROOT/common" \
     --ignore-panics --no-fail-fast \
@@ -254,6 +256,7 @@ mkdir -p "$COVERAGE_ROOT/filtergateway"
 (
   cd "$PROJECT_ROOT/src"
   cargo tarpaulin \
+    --skip-clean \
     --out Html --out Lcov --out Xml \
     --output-dir "$COVERAGE_ROOT/filtergateway" \
     --ignore-panics --no-fail-fast \
@@ -294,6 +297,7 @@ mkdir -p "$COVERAGE_ROOT/actioncontroller"
 (
   cd "$PROJECT_ROOT/src"
   cargo tarpaulin \
+    --skip-clean \
     --out Html --out Lcov --out Xml \
     --output-dir "$COVERAGE_ROOT/actioncontroller" \
     --ignore-panics --no-fail-fast \
