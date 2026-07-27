@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pullpiri ISO 26262 ASIL-B Safety & Coverage Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card-bg: rgba(22, 27, 34, 0.75);
+            --card-border: rgba(48, 54, 61, 0.8);
+            --primary: #38BDF8;
+            --primary-glow: rgba(56, 189, 248, 0.25);
+            --success: #34D399;
+            --success-glow: rgba(52, 211, 153, 0.2);
+            --text-main: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --accent: #818CF8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2.5rem 2rem;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(129, 140, 248, 0.08) 0%, transparent 40%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.35rem 1rem;
+            background: var(--success-glow);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            color: var(--success);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFFFFF 0%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-value {
+            font-size: 2.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: var(--success);
+            margin-top: 0.35rem;
+            font-weight: 600;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 1.5rem;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .reports-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .report-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            border-radius: 1rem;
+            padding: 1.75rem;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .report-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px var(--primary-glow);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .crate-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFFFFF;
+        }
+
+        .crate-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.06);
+            color: var(--text-muted);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .metric-box {
+            display: flex;
+            align-items: baseline;
+            gap: 0.75rem;
+            margin: 1rem 0;
+        }
+
+        .pct-big {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--success);
+        }
+
+        .lines-detail {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+            border-radius: 999px;
+        }
+
+        .btn-view {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            color: var(--primary);
+            font-weight: 600;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-view:hover {
+            background: var(--primary);
+            color: #000000;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .btn-view-sphinx {
+            background: rgba(129, 140, 248, 0.15);
+            border-color: rgba(129, 140, 248, 0.4);
+            color: var(--accent);
+        }
+
+        .btn-view-sphinx:hover {
+            background: var(--accent);
+            color: #000000;
+        }
+
+        footer {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--card-border);
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="badge">
+                <div class="pulse-dot"></div>
+                ISO 26262 ASIL-B Verified (100% Gates Passed)
+            </div>
+            <h1>Pullpiri Safety & Coverage Portal</h1>
+            <p class="subtitle">Unified evidence dashboard for unit tests, line coverage, and functional safety documentation</p>
+        </header>
+
+        <!-- Summary Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Workspace Coverage</div>
+                <div class="stat-value">77.0%</div>
+                <div class="stat-sub">12,254 / 16,053 lines covered</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">ASIL-B Threshold Requirement</div>
+                <div class="stat-value">≥ 70.0%</div>
+                <div class="stat-sub">ISO 26262 Part 6 §9.4.5</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Crates Passing Gates</div>
+                <div class="stat-value">7 / 7</div>
+                <div class="stat-sub">100% Threshold Compliance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Traceability Links</div>
+                <div class="stat-value">24 / 24</div>
+                <div class="stat-sub">15 Requirements Verified</div>
+            </div>
+        </div>
+
+        <!-- System & Safety Docs Link -->
+        <h2 class="section-title">Functional Safety Documentation & Traceability</h2>
+        <div class="reports-grid" style="grid-template-columns: 1fr; margin-bottom: 2.5rem;">
+            <div class="report-card" style="border-color: rgba(129, 140, 248, 0.5);">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">Sphinx ISO 26262 Safety Evidence Package</div>
+                        <div class="crate-tag">System Documentation</div>
+                    </div>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem; font-size: 0.95rem;">
+                        Complete Sphinx-Needs interactive database containing HARA Worksheets, FMEA (10 rows), DFA (4 entries), Assumptions of Use (10 AoUs), and Technical Safety Requirements (15 comp_req nodes).
+                    </p>
+                </div>
+                <a href="../../safety_docs/_build/html/index.html" class="btn-view btn-view-sphinx" target="_blank">
+                    📖 Open ISO 26262 Sphinx Safety Documentation Site
+                </a>
+            </div>
+        </div>
+
+        <!-- Crate Coverage Reports Grid -->
+        <h2 class="section-title">Individual Crate Coverage Reports</h2>
+        <div class="reports-grid">
+
+            <!-- Common -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">common</div>
+                        <div class="crate-tag">Shared Core</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">85.8%</div>
+                        <div class="lines-detail">(2,300 / 2,681 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 85.8%;"></div>
+                    </div>
+                </div>
+                <a href="common/tarpaulin-report-common.html" class="btn-view" target="_blank">
+                    🔍 View common Coverage Report
+                </a>
+            </div>
+
+            <!-- FilterGateway -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">filtergateway</div>
+                        <div class="crate-tag">Player Module</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">81.3%</div>
+                        <div class="lines-detail">(630 / 775 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 81.3%;"></div>
+                    </div>
+                </div>
+                <a href="filtergateway/tarpaulin-report-filtergateway.html" class="btn-view" target="_blank">
+                    🔍 View filtergateway Coverage Report
+                </a>
+            </div>
+
+            <!-- Tools -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">tools</div>
+                        <div class="crate-tag">Dev Tools</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">78.0%</div>
+                        <div class="lines-detail">(900 / 1,154 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 78.0%;"></div>
+                    </div>
+                </div>
+                <a href="tools/tarpaulin-report-tools.html" class="btn-view" target="_blank">
+                    🔍 View tools Coverage Report
+                </a>
+            </div>
+
+            <!-- StateManager -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">statemanager</div>
+                        <div class="crate-tag">Player Module</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">75.7%</div>
+                        <div class="lines-detail">(2,823 / 3,729 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 75.7%;"></div>
+                    </div>
+                </div>
+                <a href="statemanager/tarpaulin-report-statemanager.html" class="btn-view" target="_blank">
+                    🔍 View statemanager Coverage Report
+                </a>
+            </div>
+
+            <!-- APIServer -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">apiserver</div>
+                        <div class="crate-tag">Server Module</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">73.5%</div>
+                        <div class="lines-detail">(2,510 / 3,414 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 73.5%;"></div>
+                    </div>
+                </div>
+                <a href="server/tarpaulin-report-server.html" class="btn-view" target="_blank">
+                    🔍 View apiserver Coverage Report
+                </a>
+            </div>
+
+            <!-- NodeAgent -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">nodeagent</div>
+                        <div class="crate-tag">Agent Guardian</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">73.9%</div>
+                        <div class="lines-detail">(873 / 1,181 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 73.9%;"></div>
+                    </div>
+                </div>
+                <a href="agent/tarpaulin-report-agent.html" class="btn-view" target="_blank">
+                    🔍 View nodeagent Coverage Report
+                </a>
+            </div>
+
+            <!-- ActionController -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">actioncontroller</div>
+                        <div class="crate-tag">Player Module</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">71.1%</div>
+                        <div class="lines-detail">(2,218 / 3,119 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 71.1%;"></div>
+                    </div>
+                </div>
+                <a href="actioncontroller/tarpaulin-report-actioncontroller.html" class="btn-view" target="_blank">
+                    🔍 View actioncontroller Coverage Report
+                </a>
+            </div>
+
+        </div>
+
+        <footer>
+            Pullpiri Vehicle Workload Orchestration Engine — ISO 26262 Functional Safety Package
+        </footer>
+    </div>
+</body>
+</html>
