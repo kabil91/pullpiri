@@ -672,6 +672,16 @@ spec:
         Arc::new(Mutex::new(HashMap::new()))
     }
 
+    macro_rules! acquire_lock_and_clear_podman {
+        () => {
+            let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+                Ok(g) => g,
+                Err(p) => p.into_inner(),
+            };
+            std::env::remove_var("PODMAN_SOCKET");
+        };
+    }
+
     #[test]
     fn test_containers_equal_except_stats_true_and_false() {
         let c1 = ContainerInfo {
@@ -797,6 +807,7 @@ spec:
     /// Since the loop is infinite, we use a short timeout to exercise one iteration.
     #[tokio::test]
     async fn test_reconciliation_loop_empty_cache_no_panic() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
         // The loop runs indefinitely; a timeout verifies it doesn't panic in the first iteration.
         let result = timeout(
@@ -812,6 +823,7 @@ spec:
     /// and does not panic when at least one desired state is present (but container_id is empty).
     #[tokio::test]
     async fn test_reconciliation_loop_skips_empty_container_id() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
         {
             let mut c = cache.lock().await;
@@ -836,6 +848,7 @@ spec:
     /// attempt any Podman API call and completes without panic.
     #[tokio::test]
     async fn test_handle_exited_container_never_policy_no_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -854,6 +867,7 @@ spec:
     /// exit code of 0 does NOT attempt to restart the container.
     #[tokio::test]
     async fn test_handle_exited_container_on_failure_zero_exit_no_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -872,6 +886,7 @@ spec:
     /// non-zero exit code attempts to restart (Podman call may fail in test env, but must not panic).
     #[tokio::test]
     async fn test_handle_exited_container_on_failure_nonzero_exit_attempts_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -891,6 +906,7 @@ spec:
     /// still attempts to restart (Podman call may fail in test env, but must not panic).
     #[tokio::test]
     async fn test_handle_exited_container_always_policy_attempts_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -909,6 +925,7 @@ spec:
     /// attempt to recreate the container.
     #[tokio::test]
     async fn test_handle_missing_container_never_policy_no_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -928,6 +945,7 @@ spec:
     /// (can't recreate without YAML).
     #[tokio::test]
     async fn test_handle_missing_container_empty_pod_yaml_returns_none() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -947,6 +965,7 @@ spec:
     /// unresolvable in test env) pod YAML attempts recreation and returns None on failure.
     #[tokio::test]
     async fn test_handle_missing_container_always_policy_attempts_recreation() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -967,6 +986,7 @@ spec:
     /// a missing container is successfully recreated.
     #[tokio::test]
     async fn test_reconciliation_loop_updates_container_id_on_recreation() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let cache = make_cache();
@@ -1023,6 +1043,7 @@ spec:
     /// after the call (i.e., the early-return path was taken).
     #[tokio::test]
     async fn test_handle_exited_container_backoff_waiting_skips_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -1060,6 +1081,7 @@ spec:
     /// have elapsed since the last restart (vehicle-safety rule).
     #[tokio::test]
     async fn test_handle_exited_container_backoff_expired_stops_restart() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -1104,6 +1126,7 @@ spec:
     /// towards the MAX_LOCAL_RETRIES cap (ISO 26262 comp_req__na__local_reconcile).
     #[tokio::test]
     async fn test_handle_exited_container_first_restart_no_prior_state() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -1137,6 +1160,7 @@ spec:
     /// mutate the backoff_states map.
     #[tokio::test]
     async fn test_handle_exited_container_never_policy_no_backoff_mutation() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {
@@ -1160,6 +1184,7 @@ spec:
     /// exit_code 0 does not mutate the backoff_states map.
     #[tokio::test]
     async fn test_handle_exited_container_on_failure_zero_no_backoff_mutation() {
+        acquire_lock_and_clear_podman!();
         use crate::desired_state::RestartPolicy;
 
         let desired = DesiredState {

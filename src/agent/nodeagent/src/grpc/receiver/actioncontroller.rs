@@ -201,6 +201,16 @@ spec:
       image: nginx:latest
 "#;
 
+    macro_rules! acquire_lock_and_clear_podman {
+        () => {
+            let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+                Ok(g) => g,
+                Err(p) => p.into_inner(),
+            };
+            std::env::remove_var("PODMAN_SOCKET");
+        };
+    }
+
     #[test]
     fn test_extract_pod_name_valid() {
         let result = extract_pod_name(VALID_POD_YAML);
@@ -235,6 +245,7 @@ spec:
 
     #[tokio::test]
     async fn test_handle_workload_stop_removes_from_cache() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
 
         // Pre-populate cache with a desired state
@@ -263,6 +274,7 @@ spec:
 
     #[tokio::test]
     async fn test_handle_workload_remove_clears_from_cache() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
 
         // Pre-populate cache
@@ -286,6 +298,7 @@ spec:
 
     #[tokio::test]
     async fn test_handle_workload_start_clears_cache_on_podman_failure() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
 
         // START command will fail because podman is not running
@@ -304,6 +317,7 @@ spec:
 
     #[tokio::test]
     async fn test_handle_workload_stop_missing_from_cache_is_noop() {
+        acquire_lock_and_clear_podman!();
         let cache = make_cache();
         // Cache is empty - stopping should still attempt podman stop
 

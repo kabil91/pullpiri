@@ -87,12 +87,14 @@ run_tarpaulin() {
     return 0
   fi
 
-  echo "📂 Running tarpaulin for $label" | tee -a "$LOG_FILE"
+  local manifest_dir
+  manifest_dir=$(dirname "$PROJECT_ROOT/$manifest")
+  echo "📂 Running tarpaulin in $manifest_dir for $label" | tee -a "$LOG_FILE"
   mkdir -p "$output_dir"
 
   local tarpaulin_exit=0
   (
-    cd "$PROJECT_ROOT/src"
+    cd "$manifest_dir"
     # shellcheck disable=SC2086
     cargo tarpaulin \
       --out Html --out Lcov --out Xml \
@@ -138,16 +140,21 @@ run_tarpaulin() {
 # ==========================================================================
 
 # === TOOLS ===
-run_tarpaulin "$TOOLS_MANIFEST" "tools" "$COVERAGE_ROOT/tools" "tools" "" 70 "--packages pirictl idl2rs rocksdb-inspector" "--include-files *tools/*"
+run_tarpaulin "$TOOLS_MANIFEST" "tools" "$COVERAGE_ROOT/tools" "tools" "" 70
 
 # === NODEAGENT (Action 1: re-enabled — tests fixed, Podman tests marked #[ignore]) ===
 # ISO 26262 §9.4.5: NodeAgent contains comp_req__na__local_reconcile and comp_req__na__backoff
 run_tarpaulin "$NODEAGENT_MANIFEST" "nodeagent (agent)" "$COVERAGE_ROOT/agent" "agent" \
-  "--ignore-tests" 70 "--packages nodeagent" "--include-files *agent/nodeagent/src/*"
+  "--ignore-tests" 70
 
 # === STATEMANAGER (Action 2: added — contains comp_req__sm__heartbeat, comp_req__sm__validate_state) ===
 # ISO 26262 §9.4.5: StateManager is safety-critical ASIL-B
-run_tarpaulin "$STATEMANAGER_MANIFEST" "statemanager (player)" "$COVERAGE_ROOT/statemanager" "statemanager" "" 70 "--packages statemanager" "--include-files *player/statemanager/src/*"
+run_tarpaulin "$STATEMANAGER_MANIFEST" "statemanager (player)" "$COVERAGE_ROOT/statemanager" "statemanager" \
+  "" 70 \
+  "--packages statemanager" \
+  "--include-files player/statemanager/src/*.rs \
+   --include-files player/statemanager/src/grpc/*.rs \
+   --include-files player/statemanager/src/grpc/receiver/*.rs"
 
 # ==========================================================================
 # Phase 2: Service crates (require supporting services running)
@@ -164,7 +171,14 @@ sleep 3
 
 # === SERVER (apiserver) ===
 run_tarpaulin "$APISERVER_MANIFEST" "apiserver (server)" "$COVERAGE_ROOT/server" "server" \
-  "--skip-clean" 70 "--packages apiserver" "--include-files *server/apiserver/src/*"
+  "--skip-clean" 70 \
+  "--packages apiserver" \
+  "--include-files server/apiserver/src/*.rs \
+   --include-files server/apiserver/src/artifact/*.rs \
+   --include-files server/apiserver/src/grpc/*.rs \
+   --include-files server/apiserver/src/grpc/sender/*.rs \
+   --include-files server/apiserver/src/node/*.rs \
+   --include-files server/apiserver/src/route/*.rs"
 
 # === COMMON ===
 # Run workspace-wide tests with active background services to measure shared module coverage
@@ -235,7 +249,43 @@ start_service "$STATEMANAGER_MANIFEST"     "statemanager"
 sleep 3
 
 # === FILTERGATEWAY (player) ===
-run_tarpaulin "$FILTERGATEWAY_MANIFEST" "filtergateway (player)" "$COVERAGE_ROOT/player" "player" "" 30 "--packages filtergateway" "--include-files *player/filtergateway/src/*"
+echo "📂 Running tarpaulin for filtergateway (player)" | tee -a "$LOG_FILE"
+mkdir -p "$COVERAGE_ROOT/filtergateway"
+(
+  cd "$PROJECT_ROOT/src"
+  cargo tarpaulin \
+    --out Html --out Lcov --out Xml \
+    --output-dir "$COVERAGE_ROOT/filtergateway" \
+    --ignore-panics --no-fail-fast \
+    --run-types Tests \
+    --packages filtergateway \
+    --include-files 'player/filtergateway/src/*.rs' \
+    --include-files 'player/filtergateway/src/filter/*.rs' \
+    --include-files 'player/filtergateway/src/grpc/*.rs' \
+    --include-files 'player/filtergateway/src/grpc/sender/*.rs' \
+    --include-files 'player/filtergateway/src/vehicle/*.rs' \
+    --include-files 'player/filtergateway/src/vehicle/dds/*.rs' \
+    --exclude-files '*idl2rs*' \
+    --exclude-files '*generated*' \
+    2>&1 | tee -a "$LOG_FILE"
+) || true
+mv "$COVERAGE_ROOT/filtergateway/tarpaulin-report.html" \
+   "$COVERAGE_ROOT/filtergateway/tarpaulin-report-filtergateway.html" 2>/dev/null || true
+_lcov="$COVERAGE_ROOT/filtergateway/lcov.info"
+if [[ -f "$_lcov" ]]; then
+  _lf=$(grep "^LF:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  _lh=$(grep "^LH:" "$_lcov" | awk -F: '{sum+=$2} END{print sum}')
+  if [[ "${_lf:-0}" -gt 0 ]]; then
+    _pct=$(awk "BEGIN {printf \"%.1f\", ($_lh / $_lf) * 100}")
+    echo "📈 filtergateway (player) coverage: ${_pct}% (${_lh}/${_lf} lines)" | tee -a "$LOG_FILE"
+    if awk "BEGIN {exit ($_pct < 70) ? 0 : 1}"; then
+      echo "::error ::❌ filtergateway (player) coverage ${_pct}% is below the required 70% threshold (ISO 26262 §9.4.5)" | tee -a "$LOG_FILE"
+      COVERAGE_FAILED=1
+    else
+      echo "✅ filtergateway (player) coverage ${_pct}% meets the 70% threshold" | tee -a "$LOG_FILE"
+    fi
+  fi
+fi
 
 # === ACTIONCONTROLLER ===
 # Run actioncontroller package tests — covers grpc/, runtime/, manager, and main

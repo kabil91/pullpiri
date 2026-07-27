@@ -316,4 +316,49 @@ mod tests {
         // 5 seconds since last probe, period is 10 → should skip
         assert!(elapsed2.as_secs() < period_seconds);
     }
+
+    #[tokio::test]
+    async fn test_probe_loop_with_active_mock_server() {
+        use crate::desired_state::{LivenessProbe, ProbeConfig, ProbeType};
+
+        let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        let (_tx, socket_path) = crate::runtime::podman::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
+        let cache = make_cache();
+        {
+            let mut c = cache.lock().await;
+            let mut state = DesiredState::new("test-pod".to_string());
+            // Must match container Id returned by mock server ("test_id_123")
+            state.container_id = "test_id_123".to_string();
+            state.probe_config = Some(ProbeConfig {
+                liveness: Some(LivenessProbe {
+                    probe_type: ProbeType::Http {
+                        path: "/health".to_string(),
+                        port: 8080,
+                    },
+                    initial_delay_seconds: 0,
+                    period_seconds: 1,
+                    timeout_seconds: 1,
+                    failure_threshold: 2,
+                }),
+            });
+            c.insert("test-pod".to_string(), state);
+        }
+
+        let cache_clone = Arc::clone(&cache);
+        let probe_task = tokio::spawn(async move {
+            probe_loop(cache_clone).await;
+        });
+
+        // Let the probe loop execute at least one iteration and hit the mock check
+        sleep(Duration::from_millis(2500)).await;
+        probe_task.abort();
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
+    }
 }

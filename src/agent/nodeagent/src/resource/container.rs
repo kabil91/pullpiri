@@ -173,8 +173,14 @@ mod tests {
     use tokio;
 
     #[tokio::test]
-    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_list_success() {
+        let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        let (_tx, socket_path) = crate::runtime::podman::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
         let result = get_list().await;
         assert!(result.is_ok());
         let containers = result.unwrap();
@@ -182,14 +188,21 @@ mod tests {
             assert!(!container.Id.is_empty());
             assert!(!container.Image.is_empty());
             assert!(!container.State.is_empty());
-            // There's a case that the Status is empty.
-            // assert!(!container.Status.is_empty());
         }
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
     }
 
     #[tokio::test]
-    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_inspect_success() {
+        let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        let (_tx, socket_path) = crate::runtime::podman::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
         let list = get_list().await.unwrap();
         if let Some(container) = list.first() {
             let result = get_inspect(&container.Id).await;
@@ -200,18 +213,33 @@ mod tests {
             assert!(!inspect.Config.Image.is_empty());
             assert!(!inspect.State.Status.is_empty());
         }
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
     }
 
     #[tokio::test]
     async fn test_get_inspect_invalid_id() {
+        let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        std::env::remove_var("PODMAN_SOCKET");
+
         let invalid_id = "nonexistent_container_id_12345";
         let result = get_inspect(invalid_id).await;
         assert!(result.is_err());
     }
 
     #[tokio::test]
-    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_inspect_contains_expected_keys() {
+        let _guard = match crate::runtime::podman::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        let (_tx, socket_path) = crate::runtime::podman::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
         let hostname: String = String::from_utf8_lossy(
             &std::process::Command::new("hostname")
                 .output()
@@ -232,5 +260,8 @@ mod tests {
             assert!(info.state.contains_key("Running"));
             assert!(info.config.contains_key("Hostname"));
         }
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
     }
 }

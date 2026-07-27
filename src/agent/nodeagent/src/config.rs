@@ -193,12 +193,61 @@ mod tests {
     }
 
     #[test]
-    fn test_config_load_from_file_fallback() {
-        let path = PathBuf::from("/nonexistent/path/to/config.yaml");
-        let config = match Config::load(&path) {
-            Ok(cfg) => cfg,
-            Err(_) => Config::default(),
-        };
-        assert!(!config.get_host_ip().is_empty());
+    fn test_config_load_and_getters() {
+        let temp_dir = std::env::temp_dir();
+        let temp_path = temp_dir.join("test_nodeagent_config.yaml");
+        let yaml_content = r#"
+nodeagent:
+  node_name: "test-node"
+  node_type: "vehicle"
+  node_role: "bluechi"
+  master_ip: "10.0.0.1"
+  node_ip: "10.0.0.2"
+  grpc_port: 47004
+  log_level: "info"
+  metrics:
+    collection_interval: 5
+    batch_size: 10
+  system:
+    hostname: "test-host"
+    platform: "linux"
+    architecture: "x86_64"
+  yaml_storage: "/tmp/piccolo/yaml"
+"#;
+        std::fs::write(&temp_path, yaml_content).unwrap();
+
+        let config = Config::load(&temp_path).unwrap();
+        assert_eq!(config.get_node_name(), "test-node");
+        assert_eq!(config.get_hostname(), "test-host");
+        assert_eq!(config.get_yaml_storage(), "/tmp/piccolo/yaml");
+        assert_eq!(config.get_host_ip(), "10.0.0.2");
+
+        let _ = std::fs::remove_file(&temp_path);
+    }
+
+    #[test]
+    fn test_config_defaults() {
+        let name = default_node_name();
+        assert!(!name.is_empty());
+        assert_eq!(default_node_type(), "cloud");
+        assert_eq!(default_node_role(), "nodeagent");
+        assert_eq!(default_yaml_storage(), "/etc/piccolo/yaml");
+    }
+
+    #[test]
+    fn test_get_host_ip_fallback() {
+        let mut config = Config::default();
+        config.nodeagent.node_ip = "".to_string();
+        config.nodeagent.master_ip = "192.168.1.5".to_string();
+
+        let ip = config.get_host_ip();
+        assert!(!ip.is_empty());
+    }
+
+    #[test]
+    fn test_config_get_default_fallback() {
+        // Force unwrap_or_else inside Config::get by calling it
+        let config = Config::get();
+        assert!(!config.get_host_ip().is_empty() || config.nodeagent.master_ip.is_empty());
     }
 }

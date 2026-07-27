@@ -1024,4 +1024,37 @@ mod tests {
             assert!(has_nvidia_mount, "Should have NVIDIA library mount");
         }
     }
+
+    #[tokio::test]
+    async fn test_start_stop_restart_lifecycle() {
+        let _guard = match super::super::test_helpers::TEST_LOCK.lock() {
+            Ok(g) => g,
+            Err(p) => p.into_inner(),
+        };
+        let (_tx, socket_path) = super::super::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
+        let pod_yaml = r#"
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+spec:
+  containers:
+  - name: test-container
+    image: alpine:latest
+"#;
+
+        let start_res = start(pod_yaml).await;
+        assert!(start_res.is_ok(), "start failed: {:?}", start_res.err());
+
+        let restart_res = restart(pod_yaml).await;
+        assert!(restart_res.is_ok());
+
+        let stop_res = stop(pod_yaml).await;
+        assert!(stop_res.is_ok());
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
+    }
 }

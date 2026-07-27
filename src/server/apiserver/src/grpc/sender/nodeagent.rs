@@ -488,4 +488,20 @@ spec:
             let result = send_to_node(action, "127.0.0.1".to_string()).await;
         }
     }
+
+    #[tokio::test]
+    async fn test_send_guest_with_no_nodes() {
+        let action = create_test_simple_yaml_request();
+        // With no guest nodes, send_guest should return not_found error quickly
+        let result = send_guest(action).await;
+        assert!(result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_send_to_node_ip_zero() {
+        // 0.0.0.0 should be remapped to 127.0.0.1, fail quickly since no service is running
+        let action = create_test_simple_yaml_request();
+        let result = send_to_node(action, "0.0.0.0".to_string()).await;
+        assert!(result.is_err());
+    }
 }

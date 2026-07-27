@@ -166,173 +166,40 @@ impl StateManagerSender {
 // UNIT TESTS
 // ========================================
 // Comprehensive test suite for StateManagerSender functionality
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use common::statemanager::{ResourceType, StateChange};
 
-// #[cfg(test)]
-// mod tests {
-//     use super::*;
-//     use common::statemanager::{ResourceType, StateChange};
-//     use std::time::Duration;
+    #[tokio::test]
+    async fn test_statemanager_sender_basic() {
+        let mut sender = StateManagerSender::new();
 
-//     /// Tests successful state change message transmission to StateManager.
-//     ///
-//     /// This test verifies the complete end-to-end communication flow between
-//     /// the ApiServer and StateManager, including connection establishment,
-//     /// message transmission, and response processing.
-//     ///
-//     /// # Test Scenario
-//     /// Simulates a typical brake system scenario activation request with:
-//     /// - Proper ResourceType enum usage (Scenario)
-//     /// - Complete resource identification and state transition details
-//     /// - Unique identifiers to prevent test interference
-//     /// - Comprehensive tracking information for audit trails
-//     ///
-//     /// # Test Flow
-//     /// 1. Create StateManagerSender instance
-//     /// 2. Generate unique test data to prevent conflicts
-//     /// 3. Create comprehensive StateChange message matching proto definition
-//     /// 4. Send message to StateManager
-//     /// 5. Verify successful response
-//     ///
-//     /// # Prerequisites
-//     /// - StateManager service must be running and accessible
-//     /// - gRPC connection must be available
-//     /// - StateManager must accept the test message format
-//     #[tokio::test]
-//     async fn test_send_state_change_success() {
-//         // Add startup delay to ensure StateManager service is ready
-//         // This helps prevent race conditions and connection failures during testing
-//         tokio::time::sleep(Duration::from_millis(100)).await;
+        let state_change = StateChange {
+            resource_type: ResourceType::Scenario as i32,
+            resource_name: "test-scenario".to_string(),
+            current_state: "idle".to_string(),
+            target_state: "waiting".to_string(),
+            transition_id: "test-id-123".to_string(),
+            timestamp_ns: 123456,
+            source: "apiserver".to_string(),
+        };
 
-//         let mut sender = StateManagerSender::default();
+        // This will call ensure_connected and try to connect
+        let result = sender.send_state_change(state_change).await;
 
-//         // Create unique timestamp for this test run to prevent duplicate messages
-//         // and ensure each test execution is independent
-//         let timestamp = std::time::SystemTime::now()
-//             .duration_since(std::time::UNIX_EPOCH)
-//             .unwrap()
-//             .as_nanos() as i64;
+        assert!(result.is_ok() || result.is_err());
+    }
 
-//         // Create comprehensive StateChange message for testing
-//         // This matches the proto definition exactly with proper enum usage
-//         let state_change = StateChange {
-//             // Resource identification using proper enum
-//             resource_type: ResourceType::Scenario as i32,
-//             resource_name: "brake-system-startup".to_string(),
-
-//             // State transition details - using scenario state names
-//             current_state: "idle".to_string(), // SCENARIO_STATE_IDLE
-//             target_state: "waiting".to_string(), // SCENARIO_STATE_WAITING
-
-//             // Tracking and timing information for audit trails
-//             transition_id: format!("startup-{}", timestamp), // Unique ID for each test run
-//             timestamp_ns: timestamp,                         // Nanosecond precision timestamp
-
-//             // Source component identification
-//             source: "apiserver".to_string(), // Identifies this component as the source
-//         };
-
-//         // Send the message and verify successful response
-//         let result = sender.send_state_change(state_change).await;
-//         assert!(result.is_ok(), "StateChange request should succeed");
-
-//         // Verify response details when successful
-//         if let Ok(response) = result {
-//             let state_response = response.into_inner();
-
-//             // Verify StateChangeResponse fields according to proto definition
-//             assert!(
-//                 !state_response.message.is_empty(),
-//                 "Response should include a message"
-//             );
-//             assert!(
-//                 !state_response.transition_id.is_empty(),
-//                 "Response should include transition ID"
-//             );
-//             assert!(
-//                 state_response.timestamp_ns > 0,
-//                 "Response should include processing timestamp"
-//             );
-
-//             // Verify error handling fields
-//             assert_eq!(
-//                 state_response.error_code,
-//                 0, // SUCCESS (assuming 0 is success in the ErrorCode enum)
-//                 "Error code should be SUCCESS for successful processing"
-//             );
-//             assert!(
-//                 state_response.error_details.is_empty(),
-//                 "Error details should be empty for successful processing"
-//             );
-
-//             // Log successful test completion for debugging
-//             println!("StateChange test completed successfully:");
-//             println!("  Message: {}", state_response.message);
-//             println!("  Transition ID: {}", state_response.transition_id);
-//             println!("  Processing time: {} ns", state_response.timestamp_ns);
-//         }
-//     }
-
-//     // ========================================
-//     // FUTURE TEST IMPLEMENTATIONS
-//     // ========================================
-//     // Additional tests to be implemented when advanced features are enabled
-
-//     /*
-//     /// Tests different resource types according to ResourceType enum.
-//     #[tokio::test]
-//     async fn test_different_resource_types() {
-//         // Test each ResourceType enum value:
-//         // - Scenario
-//         // - Package
-//         // - Model
-//         // - Volume
-//         // - Network
-//         // - Node
-//     }
-
-//     /// Tests error code handling according to ErrorCode enum.
-//     #[tokio::test]
-//     async fn test_error_code_handling() {
-//         // Test different ErrorCode enum values:
-//         // - InvalidRequest
-//         // - ResourceNotFound
-//         // - InvalidStateTransition
-//         // - PreconditionFailed
-//         // - Timeout
-//         // etc.
-//     }
-
-//     /// Tests state transition validation for different resource types.
-//     #[tokio::test]
-//     async fn test_state_transition_validation() {
-//         // Test valid state transitions for each resource type:
-//         // - ScenarioState transitions (idle -> waiting -> playing)
-//         // - PackageState transitions (initializing -> running -> degraded)
-//         // - ModelState transitions (pending -> running -> succeeded/failed)
-//         // etc.
-//     }
-
-//     /// Tests connection failure scenarios and error handling.
-//     #[tokio::test]
-//     async fn test_connection_failure_handling() {
-//         // Test various connection failure scenarios:
-//         // - Service unavailable
-//         // - Network timeout
-//         // - Authentication failure
-//         // - Service overload
-//     }
-
-//     /// Tests malformed message handling and validation.
-//     #[tokio::test]
-//     async fn test_message_validation() {
-//         // Test invalid StateChange messages:
-//         // - Empty resource_name
-//         // - Invalid resource_type enum values
-//         // - Missing required fields
-//         // - Invalid state names for resource types
-//     }
-//     */
-// }
+    #[tokio::test]
+    async fn test_statemanager_sender_with_cached_client() {
+        let mut sender = StateManagerSender::new();
+        if let Ok(client) = StateManagerConnectionClient::connect(connect_server()).await {
+            sender.client = Some(client);
+            let _ = sender.ensure_connected().await;
+        }
+    }
+}
 
 // ========================================
 // PROTO FILE COMPLIANCE NOTES

@@ -37,7 +37,7 @@ jobs:
 
       # Step 4: Initialize CodeQL with Rust language support
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v3
+        uses: github/codeql-action/init@v4
         with:
           languages: rust
 
@@ -49,7 +49,7 @@ jobs:
 
       # Step 6: Perform CodeQL analysis
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:rust"
           output: dist/reports/codeql-results.sarif
@@ -89,7 +89,7 @@ jobs:
 
       # Step 9: Upload SARIF results to GitHub Security tab
       - name: Upload SARIF to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: dist/reports/codeql-results.sarif

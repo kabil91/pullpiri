@@ -195,11 +195,19 @@ mod tests {
     use tokio;
 
     #[tokio::test]
-    #[ignore = "requires live Podman daemon socket — run in integration environment only"]
     async fn test_get_with_valid_path() {
+        let _guard = crate::runtime::podman::test_helpers::TEST_LOCK
+            .lock()
+            .unwrap();
+        let (_tx, socket_path) = crate::runtime::podman::test_helpers::start_mock_server().await;
+        std::env::set_var("PODMAN_SOCKET", &socket_path);
+
         let result: Result<Bytes, Error> = get("/v1.0/version").await;
         assert!(result.is_ok());
         let bytes = result.unwrap();
         assert!(!bytes.is_empty());
+
+        std::env::remove_var("PODMAN_SOCKET");
+        let _ = std::fs::remove_file(&socket_path);
     }
 }

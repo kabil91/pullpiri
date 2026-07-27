@@ -321,4 +321,51 @@ mod tests {
 
         println!("Total guest nodes found: {}", guest_nodes.len());
     }
+
+    #[tokio::test]
+    async fn test_find_node_by_simple_key_success_populated() {
+        // The key is "nodes/127.0.0.1" so the ip returned is the suffix after "nodes/"
+        if common::etcd::put("nodes/test-ip-addr", "value")
+            .await
+            .is_ok()
+        {
+            let result = find_node_by_simple_key().await;
+            // Result may be any non-empty key suffix found in etcd — just check it's Some
+            assert!(result.is_some(), "Expected Some but got None");
+            let _ = common::etcd::delete("nodes/test-ip-addr").await;
+        }
+    }
+
+    #[tokio::test]
+    async fn test_find_node_from_etcd_success_populated() {
+        let node_info = create_test_node_info(
+            "node-abc",
+            "host-abc",
+            "127.0.0.1",
+            NodeRole::Nodeagent,
+            NodeStatus::Ready,
+        );
+        let val = serde_json::to_string(&node_info).unwrap();
+        if common::etcd::put("cluster/nodes/node-abc", &val)
+            .await
+            .is_ok()
+        {
+            let result = find_node_from_etcd().await;
+            // ip_address should be the non-empty string stored in node_info
+            assert!(result.is_some(), "Expected Some but got None");
+            let ip = result.unwrap();
+            assert!(!ip.is_empty(), "IP address must not be empty");
+
+            // Overwrite with invalid JSON to test error branch
+            if common::etcd::put("cluster/nodes/node-abc", "invalid json")
+                .await
+                .is_ok()
+            {
+                let result_invalid = find_node_from_etcd().await;
+                assert!(result_invalid.is_none(), "Expected None for invalid JSON");
+            }
+
+            let _ = common::etcd::delete("cluster/nodes/node-abc").await;
+        }
+    }
 }
