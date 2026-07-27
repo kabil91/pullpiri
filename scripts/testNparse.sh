@@ -122,7 +122,13 @@ if ! docker ps | grep -qi "idl2dds"; then
   [[ ! -d IDL2DDS ]] && git clone https://github.com/MCO-PICCOLO/IDL2DDS -b master
 
   pushd IDL2DDS
-  docker compose up --build -d
+  if docker compose version &>/dev/null; then
+    docker compose up -d || echo "⚠️ docker compose up failed"
+  elif command -v docker-compose &>/dev/null; then
+    docker-compose up -d || echo "⚠️ docker-compose up failed"
+  else
+    echo "⚠️ No docker compose or docker-compose command found"
+  fi
   popd
 else
   echo "🟢 IDL2DDS already running." | tee -a "$LOG_FILE"
