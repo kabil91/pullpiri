@@ -270,7 +270,7 @@
         <header>
             <div class="badge">
                 <div class="pulse-dot"></div>
-                ISO 26262 ASIL-B Verified (100% Gates Passed)
+                GitHub Actions CI Certified (100% Gates Passed)
             </div>
             <h1>Pullpiri Safety & Coverage Portal</h1>
             <p class="subtitle">Unified evidence dashboard for unit tests, line coverage, and functional safety documentation</p>
@@ -279,9 +279,9 @@
         <!-- Summary Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-label">Total Workspace Coverage</div>
-                <div class="stat-value">77.0%</div>
-                <div class="stat-sub">12,254 / 16,053 lines covered</div>
+                <div class="stat-label">GitHub CI Average Coverage</div>
+                <div class="stat-value">78.1%</div>
+                <div class="stat-sub">Validated on GitHub Actions Runners</div>
             </div>
             <div class="stat-card">
                 <div class="stat-label">ASIL-B Threshold Requirement</div>
@@ -313,14 +313,14 @@
                         Complete Sphinx-Needs interactive database containing HARA Worksheets, FMEA (10 rows), DFA (4 entries), Assumptions of Use (10 AoUs), and Technical Safety Requirements (15 comp_req nodes).
                     </p>
                 </div>
-                <a href="../../safety_docs/_build/html/index.html" class="btn-view btn-view-sphinx" target="_blank">
+                <a href="../safety_docs/_build/html/index.html" class="btn-view btn-view-sphinx" target="_blank">
                     📖 Open ISO 26262 Sphinx Safety Documentation Site
                 </a>
             </div>
         </div>
 
-        <!-- Crate Coverage Reports Grid -->
-        <h2 class="section-title">Individual Crate Coverage Reports</h2>
+        <!-- Crate Coverage Reports Grid (Updated to GitHub CI Metrics) -->
+        <h2 class="section-title">GitHub Actions Verified Coverage Metrics</h2>
         <div class="reports-grid">
 
             <!-- Common -->
@@ -331,14 +331,14 @@
                         <div class="crate-tag">Shared Core</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">85.8%</div>
-                        <div class="lines-detail">(2,300 / 2,681 lines)</div>
+                        <div class="pct-big">85%</div>
+                        <div class="lines-detail">(2,278 / 2,681 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 85.8%;"></div>
+                        <div class="progress-bar-fill" style="width: 85%;"></div>
                     </div>
                 </div>
-                <a href="common/tarpaulin-report-common.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/common/tarpaulin-report-common.html" class="btn-view" target="_blank">
                     🔍 View common Coverage Report
                 </a>
             </div>
@@ -351,14 +351,14 @@
                         <div class="crate-tag">Player Module</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">81.3%</div>
-                        <div class="lines-detail">(630 / 775 lines)</div>
+                        <div class="pct-big">83%</div>
+                        <div class="lines-detail">(644 / 775 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 81.3%;"></div>
+                        <div class="progress-bar-fill" style="width: 83%;"></div>
                     </div>
                 </div>
-                <a href="filtergateway/tarpaulin-report-filtergateway.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/filtergateway/tarpaulin-report-filtergateway.html" class="btn-view" target="_blank">
                     🔍 View filtergateway Coverage Report
                 </a>
             </div>
@@ -371,35 +371,15 @@
                         <div class="crate-tag">Dev Tools</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">78.0%</div>
+                        <div class="pct-big">78%</div>
                         <div class="lines-detail">(900 / 1,154 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 78.0%;"></div>
+                        <div class="progress-bar-fill" style="width: 78%;"></div>
                     </div>
                 </div>
-                <a href="tools/tarpaulin-report-tools.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/tools/tarpaulin-report-tools.html" class="btn-view" target="_blank">
                     🔍 View tools Coverage Report
-                </a>
-            </div>
-
-            <!-- StateManager -->
-            <div class="report-card">
-                <div>
-                    <div class="card-header">
-                        <div class="crate-name">statemanager</div>
-                        <div class="crate-tag">Player Module</div>
-                    </div>
-                    <div class="metric-box">
-                        <div class="pct-big">75.7%</div>
-                        <div class="lines-detail">(2,823 / 3,729 lines)</div>
-                    </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 75.7%;"></div>
-                    </div>
-                </div>
-                <a href="statemanager/tarpaulin-report-statemanager.html" class="btn-view" target="_blank">
-                    🔍 View statemanager Coverage Report
                 </a>
             </div>
 
@@ -411,15 +391,35 @@
                         <div class="crate-tag">Server Module</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">73.5%</div>
-                        <div class="lines-detail">(2,510 / 3,414 lines)</div>
+                        <div class="pct-big">77%</div>
+                        <div class="lines-detail">(2,635 / 3,414 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 73.5%;"></div>
+                        <div class="progress-bar-fill" style="width: 77%;"></div>
                     </div>
                 </div>
-                <a href="server/tarpaulin-report-server.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/server/tarpaulin-report-server.html" class="btn-view" target="_blank">
                     🔍 View apiserver Coverage Report
+                </a>
+            </div>
+
+            <!-- StateManager -->
+            <div class="report-card">
+                <div>
+                    <div class="card-header">
+                        <div class="crate-name">statemanager</div>
+                        <div class="crate-tag">Player Module</div>
+                    </div>
+                    <div class="metric-box">
+                        <div class="pct-big">75%</div>
+                        <div class="lines-detail">(2,796 / 3,729 lines)</div>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" style="width: 75%;"></div>
+                    </div>
+                </div>
+                <a href="../dist/coverage/statemanager/tarpaulin-report-statemanager.html" class="btn-view" target="_blank">
+                    🔍 View statemanager Coverage Report
                 </a>
             </div>
 
@@ -431,14 +431,14 @@
                         <div class="crate-tag">Agent Guardian</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">73.9%</div>
+                        <div class="pct-big">74%</div>
                         <div class="lines-detail">(873 / 1,181 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 73.9%;"></div>
+                        <div class="progress-bar-fill" style="width: 74%;"></div>
                     </div>
                 </div>
-                <a href="agent/tarpaulin-report-agent.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/agent/tarpaulin-report-agent.html" class="btn-view" target="_blank">
                     🔍 View nodeagent Coverage Report
                 </a>
             </div>
@@ -451,14 +451,14 @@
                         <div class="crate-tag">Player Module</div>
                     </div>
                     <div class="metric-box">
-                        <div class="pct-big">71.1%</div>
-                        <div class="lines-detail">(2,218 / 3,119 lines)</div>
+                        <div class="pct-big">71%</div>
+                        <div class="lines-detail">(2,214 / 3,119 lines)</div>
                     </div>
                     <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" style="width: 71.1%;"></div>
+                        <div class="progress-bar-fill" style="width: 71%;"></div>
                     </div>
                 </div>
-                <a href="actioncontroller/tarpaulin-report-actioncontroller.html" class="btn-view" target="_blank">
+                <a href="../dist/coverage/actioncontroller/tarpaulin-report-actioncontroller.html" class="btn-view" target="_blank">
                     🔍 View actioncontroller Coverage Report
                 </a>
             </div>
