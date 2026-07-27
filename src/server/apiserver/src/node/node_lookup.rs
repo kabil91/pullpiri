@@ -49,14 +49,7 @@ pub async fn find_node_from_etcd() -> Option<String> {
     logd!(2, "Found {} node entries", kvs.len());
     for kv in &kvs {
         logd!(1, "Node entry: {}", kv.0);
-    }
-
-    if kvs.is_empty() {
-        return None;
-    }
-
-    match serde_json::from_str::<NodeInfo>(&kvs[0].1) {
-        Ok(node) => {
+        if let Ok(node) = serde_json::from_str::<NodeInfo>(&kv.1) {
             logd!(
                 2,
                 "Decoded node: {} ({}), status: {}",
@@ -64,13 +57,14 @@ pub async fn find_node_from_etcd() -> Option<String> {
                 node.ip_address,
                 node.status
             );
-            Some(node.ip_address)
-        }
-        Err(e) => {
-            logd!(5, "Failed to parse JSON: {} for value: {}", e, &kvs[0].1);
-            None
+            if !node.ip_address.is_empty() {
+                return Some(node.ip_address);
+            }
+        } else {
+            logd!(5, "Failed to parse JSON for key: {}", kv.0);
         }
     }
+    None
 }
 
 /// Find a node using the NodeManager
