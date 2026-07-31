@@ -35,11 +35,13 @@ jobs:
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
 
-      # Step 4: Initialize CodeQL with Rust language support
+      # Step 4: Initialize CodeQL with Rust-only config
+      # Explicit config prevents GitHub default setup from scanning cpp (no C++ in this repo)
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v4
         with:
           languages: rust
+          config-file: ./.github/codeql/codeql-config.yml
 
       # Step 5: Build workspace (required for CodeQL to capture build)
       - name: Build workspace for CodeQL capture

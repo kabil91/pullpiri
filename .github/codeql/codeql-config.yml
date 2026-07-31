@@ -1,0 +1,25 @@
+# CodeQL configuration for Pullpiri (ISO 26262 §9.4.9 Static Analysis)
+# This project is RUST ONLY. Explicitly disabling C/C++ (cpp) to prevent
+# the "No C/C++ code found" error from GitHub's default CodeQL setup.
+#
+# Referenced by: .github/workflows/run-codeql.yml
+
+name: "Pullpiri CodeQL — Rust Only"
+
+# Only scan Rust source. Excludes auto-generated DDS IDL bindings (*idl2rs*)
+# per ISO 26262 §9.4.5 (generated code exclusion rule).
+languages:
+  - rust
+
+# Exclude auto-generated and non-safety-critical paths
+paths-ignore:
+  - "**/*idl2rs*"
+  - "**/target/**"
+  - "**/dist/**"
+  - "**/docs/**"
+  - "**/.github/**"
+  - "**/tools/**"
+
+# Use the standard Rust security query suite
+queries:
+  - uses: security-and-quality
