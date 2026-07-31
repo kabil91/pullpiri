@@ -74,7 +74,7 @@ Tool Qualification Summary
        safety of the ``Arc<Mutex<>>`` and ``Arc<AtomicU64>`` patterns. TSan errors
        cause non-zero exit codes; CI blocks merge on any detected race.
    * - ``CodeQL``
-     - 2.x (github/codeql-action@v3)
+     - 2.x (github/codeql-action@v4)
      - TCL-1
      - Part 6 §9.4.9 (Static Analysis)
      - CodeQL queries target known vulnerability classes (CWE-400, CWE-476, etc.).
