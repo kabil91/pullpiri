@@ -1,4 +1,9 @@
 //! Async logging subsystem: callers enqueue `LogEnvelope`s into bounded
+//!
+//! # Security note (CWE-117 Log Injection)
+//! All messages written to stderr or stdout are sanitized via
+//! `sanitize_log_message()` before output to prevent newline-injection
+//! attacks that could forge audit-trail entries. (ISO 26262 §9.4.9)
 //! queues keyed by virtual channels, while a background worker drains the
 //! queues and forwards payloads via Unix datagram sockets.
 
@@ -138,7 +143,8 @@ pub async fn init_async_logger(tag: &str) -> std::io::Result<()> {
 /// * `message` - Formatted log message.
 pub async fn log(level: i32, message: String) {
     if let Err(err) = enqueue(level, message).await {
-        eprintln!("[LOGGER ERROR] logger enqueue failed: {err}");
+        // CWE-117: sanitize before writing to stderr
+        eprintln!("[LOGGER ERROR] logger enqueue failed: {}", sanitize_log_message(&err.to_string()));
     }
 }
 
@@ -153,12 +159,17 @@ pub fn log_nowait(level: i32, message: String) {
         Ok(handle) => {
             handle.spawn(async move {
                 if let Err(err) = enqueue(level, message).await {
-                    eprintln!("[LOGGER ERROR] logger enqueue failed: {err}");
+                    // CWE-117: sanitize before writing to stderr
+                    eprintln!("[LOGGER ERROR] logger enqueue failed: {}", sanitize_log_message(&err.to_string()));
                 }
             });
         }
         Err(_) => {
-            eprintln!("[LOGGER WARNING] logger not running inside a Tokio runtime; dropping log: {message}");
+            // CWE-117: sanitize message before writing to stderr to prevent log injection
+            eprintln!(
+                "[LOGGER WARNING] logger not running inside a Tokio runtime; dropping log: {}",
+                sanitize_log_message(&message)
+            );
         }
     }
 }
@@ -277,6 +288,21 @@ async fn drain_channel(
     DrainState::Idle
 }
 
+/// Sanitize a log message by replacing newline and carriage-return
+/// characters with their visible escape sequences.
+///
+/// This prevents CWE-117 (Log Injection) where an attacker embeds `\n`
+/// in a log field to forge additional log lines in the audit trail.
+///
+/// # Arguments
+/// * `msg` - The raw message string to sanitize.
+///
+/// # Returns
+/// A `String` with `\n` replaced by `\\n` and `\r` replaced by `\\r`.
+fn sanitize_log_message(msg: &str) -> String {
+    msg.replace('\n', "\\n").replace('\r', "\\r")
+}
+
 fn print_stdout(env: &LogEnvelope) {
     use chrono::{DateTime, Local};
     use std::time::{Duration, UNIX_EPOCH};
@@ -284,8 +310,9 @@ fn print_stdout(env: &LogEnvelope) {
     let sys_time = UNIX_EPOCH + Duration::from_nanos(env.ts_real_ns);
     let chrono_time: DateTime<Local> = DateTime::from(sys_time);
     let time_str = chrono_time.format("%Y-%m-%d %H:%M:%S%.3f");
-    let tag = env.tag.clone();
-    let message = env.message.clone();
+    // CWE-117: sanitize tag and message before writing to stdout
+    let tag = sanitize_log_message(&env.tag);
+    let message = sanitize_log_message(&env.message);
 
     let level = match env.level {
         1 => "V",
@@ -385,6 +412,40 @@ mod tests {
     #[test]
     fn test_ch_socket_path() {
         assert_eq!(Ch::Logd.socket_path(), crate::logd::LOGD_SOCKET_PATH);
+    }
+
+    // CWE-117 sanitization unit tests
+    #[test]
+    fn test_sanitize_log_message_clean() {
+        // Normal message — unchanged
+        assert_eq!(sanitize_log_message("hello world"), "hello world");
+    }
+
+    #[test]
+    fn test_sanitize_log_message_newline_injection() {
+        // Embedded newline must be escaped — prevents forged log lines
+        let malicious = "normal\nINJECTED: fake safety event";
+        let sanitized = sanitize_log_message(malicious);
+        assert!(!sanitized.contains('\n'), "newline must be removed");
+        assert!(sanitized.contains("\\n"), "escaped sequence must be present");
+    }
+
+    #[test]
+    fn test_sanitize_log_message_cr_injection() {
+        // Carriage return must also be escaped
+        let malicious = "msg\rfake-overwrite";
+        let sanitized = sanitize_log_message(malicious);
+        assert!(!sanitized.contains('\r'), "carriage return must be removed");
+        assert!(sanitized.contains("\\r"), "escaped sequence must be present");
+    }
+
+    #[test]
+    fn test_sanitize_log_message_combined() {
+        let malicious = "line1\r\nINJECTED";
+        let sanitized = sanitize_log_message(malicious);
+        assert!(!sanitized.contains('\n'));
+        assert!(!sanitized.contains('\r'));
+        assert_eq!(sanitized, "line1\\r\\nINJECTED");
     }
 
     #[tokio::test]
