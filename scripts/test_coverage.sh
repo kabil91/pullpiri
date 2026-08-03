@@ -172,14 +172,14 @@ sleep 3
 
 # === SERVER (apiserver) ===
 run_tarpaulin "$APISERVER_MANIFEST" "apiserver (server)" "$COVERAGE_ROOT/server" "server" \
-  "--skip-clean" 70 \
-  "--packages apiserver" \
-  "--include-files server/apiserver/src/*.rs \
+  "--packages apiserver \
+   --include-files server/apiserver/src/*.rs \
    --include-files server/apiserver/src/artifact/*.rs \
    --include-files server/apiserver/src/grpc/*.rs \
    --include-files server/apiserver/src/grpc/sender/*.rs \
    --include-files server/apiserver/src/node/*.rs \
-   --include-files server/apiserver/src/route/*.rs"
+   --include-files server/apiserver/src/route/*.rs" \
+  70
 
 # === COMMON ===
 # Run workspace-wide tests with active background services to measure shared module coverage
