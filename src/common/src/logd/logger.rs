@@ -144,7 +144,10 @@ pub async fn init_async_logger(tag: &str) -> std::io::Result<()> {
 pub async fn log(level: i32, message: String) {
     if let Err(err) = enqueue(level, message).await {
         // CWE-117: sanitize before writing to stderr
-        eprintln!("[LOGGER ERROR] logger enqueue failed: {}", sanitize_log_message(&err.to_string()));
+        eprintln!(
+            "[LOGGER ERROR] logger enqueue failed: {}",
+            sanitize_log_message(&err.to_string())
+        );
     }
 }
 
@@ -160,7 +163,10 @@ pub fn log_nowait(level: i32, message: String) {
             handle.spawn(async move {
                 if let Err(err) = enqueue(level, message).await {
                     // CWE-117: sanitize before writing to stderr
-                    eprintln!("[LOGGER ERROR] logger enqueue failed: {}", sanitize_log_message(&err.to_string()));
+                    eprintln!(
+                        "[LOGGER ERROR] logger enqueue failed: {}",
+                        sanitize_log_message(&err.to_string())
+                    );
                 }
             });
         }
@@ -427,7 +433,10 @@ mod tests {
         let malicious = "normal\nINJECTED: fake safety event";
         let sanitized = sanitize_log_message(malicious);
         assert!(!sanitized.contains('\n'), "newline must be removed");
-        assert!(sanitized.contains("\\n"), "escaped sequence must be present");
+        assert!(
+            sanitized.contains("\\n"),
+            "escaped sequence must be present"
+        );
     }
 
     #[test]
@@ -436,7 +445,10 @@ mod tests {
         let malicious = "msg\rfake-overwrite";
         let sanitized = sanitize_log_message(malicious);
         assert!(!sanitized.contains('\r'), "carriage return must be removed");
-        assert!(sanitized.contains("\\r"), "escaped sequence must be present");
+        assert!(
+            sanitized.contains("\\r"),
+            "escaped sequence must be present"
+        );
     }
 
     #[test]
