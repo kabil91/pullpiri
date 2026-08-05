@@ -207,16 +207,31 @@ deny = [
 
 # Certain crates/versions that will be skipped when doing duplicate detection.
 skip = [
-    #"ansi_term@0.11.0",
-    #{ crate = "ansi_term@0.11.0", reason = "you can specify a reason why it can't be updated/removed" },
-    #{ crate = "base64", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "getrandom", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "hashbrown", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "indexmap", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "tower", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "wasi", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "windows-sys", version = "*", reason = "Multiple versions required by dependencies" },
-    #{ crate = "zerocopy", version = "*", reason = "Multiple versions required by dependencies" },
+    # Transitive duplicates from gRPC/tonic + tokio + windows ecosystem
+    # These are pulled by different dependency chains and cannot be unified
+    # without upstream crate updates. Documented here per ISO 26262 audit trail.
+    { crate = "getrandom", version = "*", reason = "tokio ecosystem pulls v0.2, newer crates use v0.3" },
+    { crate = "hashbrown", version = "*", reason = "indexmap v1 requires 0.12, indexmap v2 requires 0.14/0.15" },
+    { crate = "indexmap", version = "*", reason = "tonic/prost use v1, newer crates use v2" },
+    { crate = "itertools", version = "*", reason = "different versions required by prost-build and other crates" },
+    { crate = "serde_spanned", version = "*", reason = "toml v1 and toml v2 both included as transitive deps" },
+    { crate = "socket2", version = "*", reason = "tokio 1.x uses v0.5, some indirect deps still need v0.4" },
+    { crate = "syn", version = "*", reason = "tonic-build/prost-derive need syn v2, older proc-macros need v1" },
+    { crate = "thiserror", version = "*", reason = "some deps require thiserror v1, others v2; cannot unify without upstream changes" },
+    { crate = "thiserror-impl", version = "*", reason = "companion proc-macro to thiserror, versioned identically" },
+    { crate = "toml", version = "*", reason = "cargo tool chain uses v0.5; app config parsers use v0.8" },
+    { crate = "toml_datetime", version = "*", reason = "companion crate to toml, duplicate versions follow toml" },
+    { crate = "tower", version = "*", reason = "tonic 0.12 depends on tower 0.4; newer axum pulls tower 0.5" },
+    { crate = "windows-sys", version = "*", reason = "windows crates have v0.48/v0.52/v0.59 split across transitive deps" },
+    { crate = "windows-targets", version = "*", reason = "companion to windows-sys, mirrors its version split" },
+    { crate = "windows_aarch64_gnullvm", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_aarch64_msvc", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_i686_gnu", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_i686_gnullvm", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_i686_msvc", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_x86_64_gnu", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_x86_64_gnullvm", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
+    { crate = "windows_x86_64_msvc", version = "*", reason = "arch-specific windows target, version follows windows-sys" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
